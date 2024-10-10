@@ -13,7 +13,7 @@ export default function Footer() {
             className="flex items-center flex-initial font-bold md:mr-24"
           >
             <span className="mr-2 border rounded-full border-zinc-700">
-              <img  src={Logo} style={nbStyle.logo} alt="fireSpot"/>
+              <img  src={Logo} />
             </span>
             <span>CYBERAGE</span>
           </Link>
