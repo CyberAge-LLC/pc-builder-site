@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import Logo from '@/components/icons/logo-icon.svg';
+import Image from 'next/image';
 import GitHub from '@/components/icons/GitHub';
 
 export default function Footer() {
@@ -13,7 +13,12 @@ export default function Footer() {
             className="flex items-center flex-initial font-bold md:mr-24"
           >
             <span className="mr-2 border rounded-full border-zinc-700">
-              <Logo/>
+               <Image 
+                 src="https://ogsbootxscuhnzosbkuy.supabase.co/storage/v1/object/public/logo/logo.svg"
+                 alt="CYBERAGE" 
+                 width={64} 
+                 height={64} 
+               />
             </span>
             <span>CYBERAGE</span>
           </Link>
@@ -99,7 +104,12 @@ export default function Footer() {
         <div className="flex items-center">
           <span className="text-white">Crafted by</span>
           <a href="https://vercel.com" aria-label="Vercel.com Link">
-            <Logo/>
+            <Image 
+              src="https://ogsbootxscuhnzosbkuy.supabase.co/storage/v1/object/public/logo/logo.svg"
+              alt="CYBERAGE" 
+              width={64} 
+              height={64} 
+            />
           </a>
         </div>
       </div>

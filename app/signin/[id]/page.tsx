@@ -1,4 +1,4 @@
-import Logo from '@/components/icons/logo-icon.svg';
+import Image from 'next/image';
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -58,7 +58,12 @@ export default async function SignIn({
     <div className="flex justify-center height-screen-helper">
       <div className="flex flex-col justify-between max-w-lg p-3 m-auto w-80 ">
         <div className="flex justify-center pb-12 ">
-          <Logo/>
+          <Image 
+            src="https://ogsbootxscuhnzosbkuy.supabase.co/storage/v1/object/public/logo/logo.svg"
+            alt="CYBERAGE" 
+            width={64} 
+            height={64} 
+          />
         </div>
         <Card
           title={

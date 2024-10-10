@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { SignOut } from '@/utils/auth-helpers/server';
 import { handleRequest } from '@/utils/auth-helpers/client';
-import Logo from '@/components/icons/logo-icon.svg';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { getRedirectMethod } from '@/utils/auth-helpers/settings';
 import s from './Navbar.module.css';
@@ -19,7 +19,12 @@ export default function Navlinks({ user }: NavlinksProps) {
     <div className="relative flex flex-row justify-between py-4 align-center md:py-6">
       <div className="flex items-center flex-1">
         <Link href="/" className={s.logo} aria-label="Logo">
-          <Logo/>
+           <Image 
+             src="https://ogsbootxscuhnzosbkuy.supabase.co/storage/v1/object/public/logo/logo.svg"
+             alt="CYBERAGE" 
+             width={64} 
+             height={64} 
+           />
         </Link>
         <nav className="ml-6 space-x-2 lg:block">
 	  <Link href="/" className={s.link}>
