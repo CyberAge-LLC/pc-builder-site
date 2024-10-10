@@ -189,7 +189,7 @@ export default function Pricing({ user, products, subscription }: Props) {
                       onClick={() => handleStripeCheckout(price)}
                       className="block w-full py-2 mt-8 text-sm font-semibold text-center text-white rounded-md hover:bg-zinc-900"
                     >
-                      {'Buy'}
+                      {'Configure Now'}
                     </Button>
                   </div>
                 </div>
