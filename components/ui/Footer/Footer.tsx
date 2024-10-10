@@ -99,7 +99,7 @@ export default function Footer() {
         <div className="flex items-center">
           <span className="text-white">Crafted by</span>
           <a href="https://vercel.com" aria-label="Vercel.com Link">
-            <BrandImage/>
+            <img  src={Logo} />
           </a>
         </div>
       </div>
