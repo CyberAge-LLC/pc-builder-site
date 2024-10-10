@@ -112,15 +112,21 @@ export default function Pricing({ user, products, subscription }: Props) {
             </h1>
             <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
               "Build Your Ultimate PC – Tailored Just for You!"
-
-              Unleash your creativity and performance with our custom PC builds, designed to fit every gamer, creator, and power user. Choose from three expertly crafted tiers of customization:
-
-              • Starter Series: The perfect balance of power and affordability – ideal for everyday tasks and light gaming.
-              • Performance Pro: Boost your gaming and content creation with cutting-edge components for serious multitasking and smoother gameplay.
-              • Elite Ultra: Experience the ultimate in performance with top-tier hardware, overclocking potential, and the best graphics for those who demand nothing but the best.
-
-              Your dream build, your way. Pick your tier and customize to perfection!
             </p>
+            <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
+              Unleash your creativity and performance with our custom PC builds, designed to fit every gamer, creator, and power user. Choose from three expertly crafted tiers of customization:
+            </p>
+            <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
+              • Starter Series: The perfect balance of power and affordability – ideal for everyday tasks and light gaming.
+            </p>
+            <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
+              • Performance Pro: Boost your gaming and content creation with cutting-edge components for serious multitasking and smoother gameplay.
+            </p>
+            <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
+              • Elite Ultra: Experience the ultimate in performance with top-tier hardware, overclocking potential, and the best graphics for those who demand nothing but the best.
+            </p>
+            <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
+              Your dream build, your way. Pick your tier and customize to perfection!
           </div>
           <div className="mt-12 space-y-0 sm:mt-16 flex flex-wrap justify-center gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0">
             {products.map((product) => {
