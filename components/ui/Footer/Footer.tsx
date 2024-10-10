@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import Logo from '@/components/icons/logo-icon.svg';
+import { ReactComponent as Logo } from '@/components/icons/logo-icon.svg';
 import GitHub from '@/components/icons/GitHub';
 
 export default function Footer() {
@@ -13,7 +13,7 @@ export default function Footer() {
             className="flex items-center flex-initial font-bold md:mr-24"
           >
             <span className="mr-2 border rounded-full border-zinc-700">
-              <img  src={Logo} />
+              <Logo/>
             </span>
             <span>CYBERAGE</span>
           </Link>
@@ -99,7 +99,7 @@ export default function Footer() {
         <div className="flex items-center">
           <span className="text-white">Crafted by</span>
           <a href="https://vercel.com" aria-label="Vercel.com Link">
-            <img  src={Logo} />
+            <Logo/>
           </a>
         </div>
       </div>
