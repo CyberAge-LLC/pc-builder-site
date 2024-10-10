@@ -93,7 +93,7 @@ export default function Footer() {
       <div className="flex flex-col items-center justify-between py-12 space-y-4 md:flex-row bg-zinc-900">
         <div>
           <span>
-            &copy; {new Date().getFullYear()} ACME, Inc. All rights reserved.
+            &copy; {new Date().getFullYear()} CYBERAGE LLC. All rights reserved.
           </span>
         </div>
         <div className="flex items-center">
