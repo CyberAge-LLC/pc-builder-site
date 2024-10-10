@@ -20,7 +20,7 @@ export default function Footer() {
                  height={64} 
                />
             </span>
-            <span>CyberAge</span>
+            <span>CYBERAGE</span>
           </Link>
         </div>
         <div className="col-span-1 lg:col-span-2">
