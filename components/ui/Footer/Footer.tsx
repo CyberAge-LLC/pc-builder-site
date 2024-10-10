@@ -20,7 +20,7 @@ export default function Footer() {
                  height={64} 
                />
             </span>
-            <span>CYBERAGE</span>
+            <span>CyberAge</span>
           </Link>
         </div>
         <div className="col-span-1 lg:col-span-2">
@@ -98,7 +98,7 @@ export default function Footer() {
       <div className="flex flex-col items-center justify-between py-12 space-y-4 md:flex-row bg-zinc-900">
         <div>
           <span>
-            &copy; {new Date().getFullYear()} CYBERAGE LLC. All rights reserved.
+            &copy; {new Date().getFullYear()} CyberAge LLC. All rights reserved.
           </span>
         </div>
         <div className="flex items-center">

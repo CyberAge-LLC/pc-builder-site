@@ -9,7 +9,7 @@ import { getErrorRedirect } from '@/utils/helpers';
 import { User } from '@supabase/supabase-js';
 import cn from 'classnames';
 import { useRouter, usePathname } from 'next/navigation';
-import { useState } from 'react'
+import { useState } from 'react';
 
 export default function Pricing() {
   return (
