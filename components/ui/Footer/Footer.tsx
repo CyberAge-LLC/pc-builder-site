@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import BrandImage from '@/components/icons/Logo';
+import Logo from '@/components/icons/logo-icon.svg';
 import GitHub from '@/components/icons/GitHub';
 
 export default function Footer() {
@@ -13,7 +13,7 @@ export default function Footer() {
             className="flex items-center flex-initial font-bold md:mr-24"
           >
             <span className="mr-2 border rounded-full border-zinc-700">
-              <Logo />
+              <img  src={Logo} style={nbStyle.logo} alt="fireSpot"/>
             </span>
             <span>CYBERAGE</span>
           </Link>
