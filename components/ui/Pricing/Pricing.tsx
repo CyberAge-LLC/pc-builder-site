@@ -127,6 +127,7 @@ export default function Pricing({ user, products, subscription }: Props) {
             </p>
             <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
               Your dream build, your way. Pick your tier and customize to perfection!
+            </p>
           </div>
           <div className="mt-12 space-y-0 sm:mt-16 flex flex-wrap justify-center gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0">
             {products.map((product) => {
