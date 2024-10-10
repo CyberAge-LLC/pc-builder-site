@@ -1,3 +1,3 @@
-import { Logo } from './logo.svg';
+import { BrandImage as Logo } from './logo.svg';
 
-export default Logo;
+export default BrandImage;
