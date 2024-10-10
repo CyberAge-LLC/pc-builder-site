@@ -11,111 +11,35 @@ import cn from 'classnames';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState } from 'react';
 
-type Product = Tables<'products'>;
-type Price = Tables<'prices'>;
-interface ProductWithPrices extends Product {
-  prices: Price[];
-}
-interface PriceWithProduct extends Price {
-  products: Product | null;
-}
-
-interface Props {
-  user: User | null | undefined;
-  products: ProductWithPrices[];
-}
-
 export default function Pricing({ user, products}: Props) {
-  const router = useRouter();
-  const [priceIdLoading, setPriceIdLoading] = useState<string>();
-  const currentPath = usePathname();
-
-  const handleStripeCheckout = async (price: Price) => {
-    setPriceIdLoading(price.id);
-
-    if (!user) {
-      setPriceIdLoading(undefined);
-      return router.push('/signin/signup');
-    }
-
-    const { errorRedirect, sessionId } = await checkoutWithStripe(
-      price,
-      currentPath
-    );
-
-    if (errorRedirect) {
-      setPriceIdLoading(undefined);
-      return router.push(errorRedirect);
-    }
-
-    if (!sessionId) {
-      setPriceIdLoading(undefined);
-      return router.push(
-        getErrorRedirect(
-          currentPath,
-          'An unknown error occurred.',
-          'Please try again later or contact a system administrator.'
-        )
-      );
-    }
-
-    const stripe = await getStripe();
-    stripe?.redirectToCheckout({ sessionId });
-
-    setPriceIdLoading(undefined);
-  };
-
-  if (!products.length) {
-    return (
-      <section className="bg-black">
-        <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
-          <div className="sm:flex sm:flex-col sm:align-center"></div>
-          <p className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-            No products found. Create them in your{' '}
-            <a
-              className="text-pink-500 underline"
-              href="https://dashboard.stripe.com/products"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Stripe Dashboard
-            </a>
-            .
+  return (
+    <section className="bg-black">
+      <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
+        <div className="sm:flex sm:flex-col sm:align-center">
+          <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
+            Custom PC Builds
+          </h1>
+          <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
+            "Build Your Ultimate PC – Tailored Just for You!"
+          </p>
+          <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
+            Unleash your creativity and performance with our custom PC builds, designed to fit every gamer, creator, and power user. Choose from three expertly crafted tiers of customization:
+          </p>
+          <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
+            • Starter Series: The perfect balance of power and affordability – ideal for everyday tasks and light gaming.
+          </p>
+          <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
+            • Performance Pro: Boost your gaming and content creation with cutting-edge components for serious multitasking and smoother gameplay.
+          </p>
+          <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
+            • Elite Ultra: Experience the ultimate in performance with top-tier hardware, overclocking potential, and the best graphics for those who demand nothing but the best.
+          </p>
+          <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
+            Your dream build, your way. Pick your tier and customize to perfection!
           </p>
         </div>
         <LogoCloud />
-      </section>
-    );
-  } else {
-    return (
-      <section className="bg-black">
-        <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
-          <div className="sm:flex sm:flex-col sm:align-center">
-            <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-              Custom PC Builds
-            </h1>
-            <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-              "Build Your Ultimate PC – Tailored Just for You!"
-            </p>
-            <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-              Unleash your creativity and performance with our custom PC builds, designed to fit every gamer, creator, and power user. Choose from three expertly crafted tiers of customization:
-            </p>
-            <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-              • Starter Series: The perfect balance of power and affordability – ideal for everyday tasks and light gaming.
-            </p>
-            <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-              • Performance Pro: Boost your gaming and content creation with cutting-edge components for serious multitasking and smoother gameplay.
-            </p>
-            <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-              • Elite Ultra: Experience the ultimate in performance with top-tier hardware, overclocking potential, and the best graphics for those who demand nothing but the best.
-            </p>
-            <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-              Your dream build, your way. Pick your tier and customize to perfection!
-            </p>
-          </div>
-          <LogoCloud />
-        </div>
-      </section>
-    );
-  }
+      </div>
+    </section>
+  );
 }
