@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { ReactComponent as Logo } from '@/components/icons/logo-icon.svg';
+import Logo from '@/components/icons/logo-icon.svg';
 import GitHub from '@/components/icons/GitHub';
 
 export default function Footer() {

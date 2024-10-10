@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { SignOut } from '@/utils/auth-helpers/server';
 import { handleRequest } from '@/utils/auth-helpers/client';
-import { ReactComponent as Logo } from '@/components/icons/logo-icon.svg';
+import Logo from '@/components/icons/logo-icon.svg';
 import { usePathname, useRouter } from 'next/navigation';
 import { getRedirectMethod } from '@/utils/auth-helpers/settings';
 import s from './Navbar.module.css';
