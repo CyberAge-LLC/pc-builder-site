@@ -23,7 +23,7 @@ export default function Navlinks({ user }: NavlinksProps) {
         </Link>
         <nav className="ml-6 space-x-2 lg:block">
 	  <Link href="/" className={s.link}>
-            PC Builder
+            Custom PC Builder
           </Link>
           <Link href="/" className={s.link}>
             Pricing
