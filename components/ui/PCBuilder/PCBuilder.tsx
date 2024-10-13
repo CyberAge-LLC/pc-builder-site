@@ -9,52 +9,52 @@ export default function PCBuilder() {
     <section className="bg-black">
       <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
         <div className="sm:flex sm:flex-col sm:align-center">
-          <Link href={'./PartPicker/CPU'}>
+          <Link href='./PartPicker/CPU'>
             <Button
               label="Central Processing Unit (CPU)"
             />
           </Link>
-          <Link href={'./PartPicker/GPU'}>
+          <Link href='./PartPicker/GPU'>
   	        <Button
               label="Graphics Processing Unit (GPU)"
             />	
           </Link>
-          <Link href={'./PartPicker/Motherboard'}>
+          <Link href='./PartPicker/Motherboard'>
             <Button
               label="Motherboard"
             />
           </Link>
-          <Link href={'./PartPicker/RAM'}>
+          <Link href='./PartPicker/RAM'>
             <Button
               label="Random Access Memory (RAM)"
             />
           </Link>
-          <Link href={'./PartPicker/Storage'}>
+          <Link href='./PartPicker/Storage'>
             <Button
               label="Storage (SSD/HDD)"
             />
           </Link>
-          <Link href={'./PartPicker/PSU'}>
+          <Link href='./PartPicker/PSU'>
             <Button
               label="Power Supply Unit (PSU)"
             />
           </Link>
-          <Link href={'./PartPicker/Cooling System'}>
+          <Link href='./PartPicker/Cooling System'>
             <Button
               label="Cooling System"
             />
           </Link>
-          <Link href={'./PartPicker/Case'}>
+          <Link href='./PartPicker/Case'>
             <Button
               label="Case (Chassis)"
             />
           </Link>
-          <Link href={'./PartPicker/OS'}>
+          <Link href='./PartPicker/OS'>
             <Button
               label="Operating System (OS)"
             />
           </Link>
-          <Link href={{'./PartPicker/Peripherals'}}>
+          <Link href='./PartPicker/Peripherals'>
             <Button
               label="Peripherals (Monitor, Keyboard, Mouse, etc."
             />
