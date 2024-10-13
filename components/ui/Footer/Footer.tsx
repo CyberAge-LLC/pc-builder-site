@@ -19,8 +19,8 @@ export default function Footer() {
                 width={32} 
                 height={32} 
               />
-              <span>CYBERAGE</span>
             </span>
+            <span>CYBERAGE</span>
           </Link>
         </div>
         <div className="col-span-1 lg:col-span-2">
