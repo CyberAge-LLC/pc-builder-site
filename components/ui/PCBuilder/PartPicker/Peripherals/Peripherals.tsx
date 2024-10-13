@@ -1,4 +1,4 @@
-use client';
+'use client';
 
 import Button from '@/components/ui/Button';
 import LogoCloud from '@/components/ui/LogoCloud';
