@@ -28,7 +28,7 @@ export default function PCBuilder() {
           <Link href='./PartPicker/PSU'>
             <Button>Power Supply Unit (PSU)</Button>
           </Link>
-          <Link href='./PartPicker/Cooling System'>
+          <Link href='./PartPicker/Cooling'>
             <Button>Cooling System</Button>
           </Link>
           <Link href='./PartPicker/Case'>
