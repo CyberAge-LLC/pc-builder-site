@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
+import LogoCloud from '@/components/ui/LogoCloud';
 import cn from 'classnames';
 
 export default function PCBuilder() {
