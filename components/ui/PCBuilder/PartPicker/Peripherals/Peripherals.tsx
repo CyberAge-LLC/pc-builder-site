@@ -1,4 +1,4 @@
-````````````````````````````'use client';
+use client';
 
 import Button from '@/components/ui/Button';
 import LogoCloud from '@/components/ui/LogoCloud';
@@ -11,7 +11,7 @@ import cn from 'classnames';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState } from 'react';
 
-``export default function Peripherals() {
+export default function Peripherals() {
   return (
     <section className="bg-black">
       <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
