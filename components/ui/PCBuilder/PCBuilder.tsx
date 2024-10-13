@@ -10,7 +10,7 @@ export default function PCBuilder() {
     <section className="bg-black">
       <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
         <div className="sm:flex sm:flex-col sm:align-center">
-          <Link href='/PartPicker/CPU/CPU'>
+          <Link href='/CPU'>
             <Button>Central Processing Unit (CPU)</Button>
           </Link>
           <Link href='/GPU'>
@@ -37,7 +37,7 @@ export default function PCBuilder() {
           <Link href='/OS'>
             <Button>Operating System (OS)</Button>
           </Link>
-          <Link href="/Peripherals'>
+          <Link href='/Peripherals'>
             <Button>Peripherals (Monitor, Keyboad, Mouse, Etc.)</Button>
           </Link>
         </div>
