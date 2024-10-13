@@ -10,54 +10,34 @@ export default function PCBuilder() {
       <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
         <div className="sm:flex sm:flex-col sm:align-center">
           <Link href='./PartPicker/CPU'>
-            <Button
-              label="Central Processing Unit (CPU)"
-            />
+            <Button>Central Processing Unit (CPU)</Button>
           </Link>
           <Link href='./PartPicker/GPU'>
-  	        <Button
-              label="Graphics Processing Unit (GPU)"
-            />	
+  	        <Button>Graphics Processing Unit (GPU)</Button>
           </Link>
           <Link href='./PartPicker/Motherboard'>
-            <Button
-              label="Motherboard"
-            />
+            <Button>Motherboard</Button>
           </Link>
           <Link href='./PartPicker/RAM'>
-            <Button
-              label="Random Access Memory (RAM)"
-            />
+            <Button>Random Access Memory (RAM)</Button>
           </Link>
           <Link href='./PartPicker/Storage'>
-            <Button
-              label="Storage (SSD/HDD)"
-            />
+            <Button>Storage</Button>
           </Link>
           <Link href='./PartPicker/PSU'>
-            <Button
-              label="Power Supply Unit (PSU)"
-            />
+            <Button>Power Supply Unit (PSU)</Button>
           </Link>
           <Link href='./PartPicker/Cooling System'>
-            <Button
-              label="Cooling System"
-            />
+            <Button>Cooling System</Button>
           </Link>
           <Link href='./PartPicker/Case'>
-            <Button
-              label="Case (Chassis)"
-            />
+            <Button>Case (Chassis)</Button>
           </Link>
           <Link href='./PartPicker/OS'>
-            <Button
-              label="Operating System (OS)"
-            />
+            <Button>Operating System (OS)</Button>
           </Link>
           <Link href='./PartPicker/Peripherals'>
-            <Button
-              label="Peripherals (Monitor, Keyboard, Mouse, etc."
-            />
+            <Button>Peripherals (Monitor, Keyboad, Mouse, Etc.)</Button>
           </Link>
         </div>
         <LogoCloud />
