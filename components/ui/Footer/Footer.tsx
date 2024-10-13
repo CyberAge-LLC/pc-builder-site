@@ -13,12 +13,12 @@ export default function Footer() {
             className="flex items-center flex-initial font-bold md:mr-24"
           >
             <span className="mr-2 border rounded-full border-zinc-700">
-               <Image 
-                 src="https://ogsbootxscuhnzosbkuy.supabase.co/storage/v1/object/public/logo/logo.svg"
-                 alt="CYBERAGE" 
-                 width={32} 
-                 height={32} 
-               />
+              <Image 
+                src="https://ogsbootxscuhnzosbkuy.supabase.co/storage/v1/object/public/logo/logo.svg"
+                alt="CYBERAGE" 
+                width={32} 
+                height={32} 
+              />
             </span>
             <span>CYBERAGE</span>
           </Link>
