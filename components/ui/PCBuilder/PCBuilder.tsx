@@ -9,46 +9,56 @@ export default function PCBuilder() {
     <section className="bg-black">
       <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
         <div className="sm:flex sm:flex-col sm:align-center">
-          <Link href={'./PartPicker/CPU'}/>
-          <Button
-            label="Central Processing Unit (CPU)"
-          />
-          <Link href={'./PartPicker/GPU'}/>
-	        <Button
-            label="Graphics Processing Unit (GPU)"
-          />	
-          <Link href={'./PartPicker/Motherboard'}/>
-          <Button
-            label="Motherboard"
-          />
-          <Link href={'./PartPicker/RAM'}/>
-          <Button
-            label="Random Access Memory (RAM)"
-          />
-          <Link href={'./PartPicker/Storage'}/>
-          <Button
-            label="Storage (SSD/HDD)"
-          />
-          <Link href={'./PartPicker/PSU'}/>
-          <Button
-            label="Power Supply Unit (PSU)"
-          />
-          <Link href={'./PartPicker/Cooling System'}/>
-          <Button
-            label="Cooling System"
-          />
-          <Link href={'./PartPicker/Case'}/>
-          <Button
-            label="Case (Chassis)"
-          />
-          <Link href={'./PartPicker/OS'}/>
-          <Button
-            label="Operating System (OS)"
-          />
-          <Link href={{'./PartPicker/Peripherals'}}/>
-          <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-            Peripherals (Monitor, Keyboard, Mouse, etc.)
-          </p>
+          <Link href={'./PartPicker/CPU'}>
+            <Button
+              label="Central Processing Unit (CPU)"
+            />
+          </Link>
+          <Link href={'./PartPicker/GPU'}>
+  	        <Button
+              label="Graphics Processing Unit (GPU)"
+            />	
+          </Link>
+          <Link href={'./PartPicker/Motherboard'}>
+            <Button
+              label="Motherboard"
+            />
+          </Link>
+          <Link href={'./PartPicker/RAM'}>
+            <Button
+              label="Random Access Memory (RAM)"
+            />
+          </Link>
+          <Link href={'./PartPicker/Storage'}>
+            <Button
+              label="Storage (SSD/HDD)"
+            />
+          </Link>
+          <Link href={'./PartPicker/PSU'}>
+            <Button
+              label="Power Supply Unit (PSU)"
+            />
+          </Link>
+          <Link href={'./PartPicker/Cooling System'}>
+            <Button
+              label="Cooling System"
+            />
+          </Link>
+          <Link href={'./PartPicker/Case'}>
+            <Button
+              label="Case (Chassis)"
+            />
+          </Link>
+          <Link href={'./PartPicker/OS'}>
+            <Button
+              label="Operating System (OS)"
+            />
+          </Link>
+          <Link href={{'./PartPicker/Peripherals'}}>
+            <Button
+              label="Peripherals (Monitor, Keyboard, Mouse, etc."
+            />
+          </Link>
         </div>
         <LogoCloud />
       </div>
