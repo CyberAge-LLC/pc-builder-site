@@ -13,31 +13,31 @@ export default function PCBuilder() {
           <Link href='/PartPicker/CPU/CPU'>
             <Button>Central Processing Unit (CPU)</Button>
           </Link>
-          <Link href='/PartPicker/GPU/GPU'>
+          <Link href='/GPU'>
   	        <Button>Graphics Processing Unit (GPU)</Button>
           </Link>
-          <Link href='/PartPicker/Motherboard/Motherboard'>
+          <Link href='/Motherboard'>
             <Button>Motherboard</Button>
           </Link>
-          <Link href='/PartPicker/RAM/RAM'>
+          <Link href='/RAM'>
             <Button>Random Access Memory (RAM)</Button>
           </Link>
-          <Link href='/PartPicker/Storage/Storage'>
+          <Link href='/Storage'>
             <Button>Storage</Button>
           </Link>
-          <Link href='/PartPicker/PSU/PSU'>
+          <Link href='/PSU'>
             <Button>Power Supply Unit (PSU)</Button>
           </Link>
-          <Link href='/PartPicker/Cooling/Cooling'>
+          <Link href='/Cooling'>
             <Button>Cooling System</Button>
           </Link>
-          <Link href='/PartPicker/Case/Case'>
+          <Link href='/Case'>
             <Button>Case (Chassis)</Button>
           </Link>
-          <Link href='/PartPicker/OS/OS'>
+          <Link href='/OS'>
             <Button>Operating System (OS)</Button>
           </Link>
-          <Link href='/PartPicker/Peripherals/Peripherals'>
+          <Link href="/Peripherals'>
             <Button>Peripherals (Monitor, Keyboad, Mouse, Etc.)</Button>
           </Link>
         </div>
