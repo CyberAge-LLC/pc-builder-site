@@ -16,8 +16,8 @@ export default function Footer() {
                <Image 
                  src="https://ogsbootxscuhnzosbkuy.supabase.co/storage/v1/object/public/logo/logo.svg"
                  alt="CYBERAGE" 
-                 width={16} 
-                 height={16} 
+                 width={32} 
+                 height={32} 
                />
             </span>
             <span>CYBERAGE</span>
@@ -107,8 +107,8 @@ export default function Footer() {
             <Image 
               src="https://ogsbootxscuhnzosbkuy.supabase.co/storage/v1/object/public/logo/logo.svg"
               alt="CYBERAGE" 
-              width={16} 
-              height={16} 
+              width={32} 
+              height={32} 
             />
           </a>
         </div>

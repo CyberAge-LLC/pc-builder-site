@@ -22,8 +22,8 @@ export default function Navlinks({ user }: NavlinksProps) {
            <Image 
              src="https://ogsbootxscuhnzosbkuy.supabase.co/storage/v1/object/public/logo/logo.svg"
              alt="CYBERAGE" 
-             width={16} 
-             height={16} 
+             width={32} 
+             height={32} 
            />
         </Link>
         <nav className="ml-6 space-x-2 lg:block">
