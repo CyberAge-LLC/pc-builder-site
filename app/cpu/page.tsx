@@ -26,7 +26,7 @@ interface PageClickEvent {
   selected: number;
 }
 
-export default function CPUTable() {
+export default function CPUTable({ data, totalPages, handlePageClick }) {
   const [data, setData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
