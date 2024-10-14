@@ -85,13 +85,22 @@ export default function CPUTable() {
     if (sortConfig !== null) {
       const { key, direction } = sortConfig;
       return [...data].sort((a, b) => {
-        const aValue = key === 'price' ? parseFloat(a[key] as string) :
-                        key === 'core_count' || key === 'tdp' ? parseInt(a[key] as string) :
-                        parseFloat(a[key] as string);
-        const bValue = key === 'price' ? parseFloat(b[key] as string) :
-                        key === 'core_count' || key === 'tdp' ? parseInt(b[key] as string) :
-                        parseFloat(b[key] as string);
+        let aValue: number | string = a[key];
+        let bValue: number | string = b[key];
 
+        // Parse values based on the type of the column
+        if (key === 'price') {
+          aValue = parseFloat(aValue as string);
+          bValue = parseFloat(bValue as string);
+        } else if (key === 'core_count' || key === 'tdp') {
+          aValue = parseInt(aValue as string, 10);
+          bValue = parseInt(bValue as string, 10);
+        } else {
+          aValue = aValue as string; // Keep as string for other fields
+          bValue = bValue as string;
+        }
+
+        // Sort based on direction
         if (direction === 'ascending') {
           return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
         } else {
@@ -103,7 +112,7 @@ export default function CPUTable() {
   };
 
   const formattedPrice = (price: string) => {
-    return parseFloat(price).toFixed(2);
+    return parseFloat(price).toFixed(2); // Ensure two decimal places for prices
   };
 
   const hasData = Array.isArray(data) && data.length > 0;
