@@ -39,7 +39,7 @@ export default function GPUTable() {
     setLoading(true);
 
     const { data: rows, count, error } = await supabase
-      .from('video-card') // Update with the correct table name in Supabase
+      .from('gputable') // Update with the correct table name in Supabase
       .select('*', { count: 'exact' });
 
     if (error) {
@@ -65,8 +65,8 @@ export default function GPUTable() {
   };
 
   const handleSort = (key: keyof TableRow) => {
-    // Disable sorting for name and chipset (strings)
-    if (key === 'name' || key === 'chipset') return;
+    // Disable sorting for name, chipset, and color (strings)
+    if (key === 'name' || key === 'chipset' || key === 'color') return;
 
     let direction: 'ascending' | 'descending' = 'ascending';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -143,7 +143,7 @@ export default function GPUTable() {
                       padding: '10px',
                       textAlign: 'center',
                       color: 'white',
-                      cursor: key === 'name' || key === 'chipset' ? 'default' : 'pointer',
+                      cursor: key === 'name' || key === 'chipset' || key === 'color' ? 'default' : 'pointer',
                     }}
                   >
                     {key.charAt(0).toUpperCase() + key.slice(1)}
