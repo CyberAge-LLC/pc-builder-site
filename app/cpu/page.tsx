@@ -32,50 +32,36 @@ export default function CPUTable() {
 
   useEffect(() => {
     fetchData();
-  }, [page, sortConfig]);
+  }, []);
 
   const fetchData = async () => {
     setLoading(true);
-
-    // Fetch total row count to calculate total pages
-    const { count, error: countError } = await supabase
+    
+    // Fetch all data from the database
+    const { data: rows, count, error } = await supabase
       .from('cpu')
-      .select('*', { count: 'exact', head: true });
+      .select('*', { count: 'exact' });
 
-    if (countError || count === null) {
-      console.error('Error fetching row count:', countError);
+    if (error) {
+      console.error('Error fetching data:', error);
       setLoading(false);
       return;
     }
 
+    const filteredRows = rows?.filter(row => 
+      !isNaN(parseFloat(row.price)) && 
+      !isNaN(parseInt(row.core_count)) && 
+      !isNaN(parseInt(row.tdp))
+    ) || [];
+
+    setData(filteredRows);
     setTotalPages(Math.ceil(count / rowsPerPage));
-
-    // Fetch data based on the current page
-    const { data: rows, error } = await supabase
-      .from('cpu')
-      .select('*')
-      .range(page * rowsPerPage, (page + 1) * rowsPerPage - 1);
-
-    if (error) {
-      console.error('Error fetching data:', error);
-    } else {
-      const filteredRows = rows?.filter(row => 
-        !isNaN(parseFloat(row.price)) && 
-        !isNaN(parseInt(row.core_count)) && 
-        !isNaN(parseInt(row.tdp))
-      ) || [];
-      setData(filteredRows);
-    }
-  
     setLoading(false);
   };
 
   const handlePageClick = (event: { selected: number }) => {
-    const selectedPage = event.selected;
-    setPage(selectedPage);
-    fetchData(); // Fetch data for the new page
+    setPage(event.selected);
   };
-
 
   const handleSort = (key: keyof TableRow) => {
     let direction: 'ascending' | 'descending' = 'ascending';
@@ -109,10 +95,10 @@ export default function CPUTable() {
 
         return direction === 'ascending' ? aValue - bValue : bValue - aValue;
       });
-  }
+    }
 
-  return sortableData;
-}, [data, sortConfig]);
+    return sortableData;
+  }, [data, sortConfig]);
 
   const paginatedData = React.useMemo(() => {
     const start = page * rowsPerPage;
