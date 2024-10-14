@@ -22,6 +22,10 @@ type TableRow = {
   col8: string;
 };
 
+interface PageClickEvent {
+  selected: number;
+}
+
 export default function CPUTable() {
    const [data, setData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
