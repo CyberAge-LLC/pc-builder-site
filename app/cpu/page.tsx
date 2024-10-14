@@ -24,9 +24,14 @@ export default function CPUTable() {
 
   const fetchData = async () => {
     // Fetch total row count to calculate total pages
-    const { count } = await supabase
+    const { count, error: countError } = await supabase
       .from('cpu')
       .select('*', { count: 'exact', head: true });
+
+    if (countError) {
+      console.error('Error fetching row count:', countError);
+      return;
+    }
 
     const totalPages = Math.ceil(count / rowsPerPage);
     setTotalPages(totalPages);
