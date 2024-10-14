@@ -65,6 +65,9 @@ export default function GPUTable() {
   };
 
   const handleSort = (key: keyof TableRow) => {
+    // Disable sorting for name and chipset (strings)
+    if (key === 'name' || key === 'chipset') return;
+
     let direction: 'ascending' | 'descending' = 'ascending';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
       direction = 'descending';
@@ -77,26 +80,17 @@ export default function GPUTable() {
 
   const sortData = (key: keyof TableRow, direction: 'ascending' | 'descending') => {
     const sorted = [...data].sort((a, b) => {
-      let aValue: string | number;
-      let bValue: string | number;
+      let aValue: number | null = parseFloat(a[key]);
+      let bValue: number | null = parseFloat(b[key]);
 
-      // If the key is numeric (price, core_clock, boost_clock, length), sort numerically
-      if (key === 'price' || key === 'core_clock' || key === 'boost_clock' || key === 'length') {
-        aValue = parseFloat(a[key]);
-        bValue = parseFloat(b[key]);
-      } else {
-        // Sort strings using localeCompare for string fields
-        aValue = a[key] as string;
-        bValue = b[key] as string;
-      }
+      // Handle NaN values by treating them as null and placing them last
+      if (isNaN(aValue)) aValue = null;
+      if (isNaN(bValue)) bValue = null;
 
-      if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return direction === 'ascending' ? aValue - bValue : bValue - aValue;
-      } else {
-        return direction === 'ascending'
-          ? (aValue as string).localeCompare(bValue as string)
-          : (bValue as string).localeCompare(aValue as string);
-      }
+      if (aValue === null) return 1; // Move NaN values to the bottom
+      if (bValue === null) return -1;
+
+      return direction === 'ascending' ? aValue - bValue : bValue - aValue;
     });
 
     setData(sorted);
@@ -131,7 +125,13 @@ export default function GPUTable() {
                   <th
                     key={key}
                     onClick={() => handleSort(key as keyof TableRow)}
-                    style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
+                    style={{
+                      flex: '1 1 10%',
+                      padding: '10px',
+                      textAlign: 'center',
+                      color: 'white',
+                      cursor: key === 'name' || key === 'chipset' ? 'default' : 'pointer',
+                    }}
                   >
                     {key.charAt(0).toUpperCase() + key.slice(1)}
                   </th>
@@ -168,13 +168,13 @@ export default function GPUTable() {
                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedRow?.id === row.id ? '#3b3b3b' : '#1a1a1a'}
                       >
                         <div style={{ flex: '1 1 10%' }}>{row.name}</div>
-                        <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price).toFixed(2)}</div>
+                        <div style={{ flex: '1 1 10%' }}>{isNaN(parseFloat(row.price)) ? 'N/A' : parseFloat(row.price).toFixed(2)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.chipset}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.memory}</div>
-                        <div style={{ flex: '1 1 10%' }}>{parseFloat(row.core_clock).toFixed(1)}</div>
-                        <div style={{ flex: '1 1 10%' }}>{parseFloat(row.boost_clock).toFixed(1)}</div>
+                        <div style={{ flex: '1 1 10%' }}>{isNaN(parseFloat(row.core_clock)) ? 'N/A' : parseFloat(row.core_clock).toFixed(1)}</div>
+                        <div style={{ flex: '1 1 10%' }}>{isNaN(parseFloat(row.boost_clock)) ? 'N/A' : parseFloat(row.boost_clock).toFixed(1)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.color}</div>
-                        <div style={{ flex: '1 1 10%' }}>{row.length}</div>
+                        <div style={{ flex: '1 1 10%' }}>{isNaN(parseFloat(row.length)) ? 'N/A' : row.length}</div>
                       </button>
                     </td>
                   </tr>
