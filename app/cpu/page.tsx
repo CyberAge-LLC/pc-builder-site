@@ -64,9 +64,6 @@ export default function CPUTable() {
   };
 
   const handleSort = (key: keyof TableRow) => {
-    // Prevent sorting on boost_clock
-    if (key === 'boost_clock') return;
-
     let direction: 'ascending' | 'descending' = 'ascending';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
       direction = 'descending';
@@ -79,8 +76,8 @@ export default function CPUTable() {
 
   const sortData = (key: keyof TableRow, direction: 'ascending' | 'descending') => {
     const sorted = [...data].sort((a, b) => {
-      let aValue: number;
-      let bValue: number;
+      let aValue: number | null;
+      let bValue: number | null;
 
       if (key === 'price') {
         aValue = parseFloat(a[key] as string);
@@ -88,12 +85,17 @@ export default function CPUTable() {
       } else if (key === 'core_clock') {
         aValue = parseFloat(a[key] as string);
         bValue = parseFloat(b[key] as string);
+      } else if (key === 'boost_clock') {
+        aValue = isNaN(parseFloat(a[key] as string)) ? null : parseFloat(a[key] as string);
+        bValue = isNaN(parseFloat(b[key] as string)) ? null : parseFloat(b[key] as string);
       } else {
         aValue = parseInt(a[key] as string);
         bValue = parseInt(b[key] as string);
       }
 
-      if (isNaN(aValue) || isNaN(bValue)) return 0;
+      // Place NaN (null) values at the end
+      if (aValue === null) return 1;
+      if (bValue === null) return -1;
 
       return direction === 'ascending' ? aValue - bValue : bValue - aValue;
     });
@@ -129,7 +131,7 @@ export default function CPUTable() {
                   <th
                     key={key}
                     onClick={() => handleSort(key as keyof TableRow)}
-                    style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: key === 'boost_clock' ? 'not-allowed' : 'pointer' }}
+                    style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
                   >
                     {key.charAt(0).toUpperCase() + key.slice(1)}
                   </th>
@@ -152,7 +154,7 @@ export default function CPUTable() {
                         style={{
                           width: '100%',
                           display: 'flex',
-                          height: '50px', // Set a fixed height
+                          height: '50px',
                           backgroundColor: selectedRow?.id === row.id ? '#3b3b3b' : '#1a1a1a',
                           color: 'white',
                           border: 'none',
@@ -169,7 +171,7 @@ export default function CPUTable() {
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price).toFixed(2)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.core_count}</div>
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.core_clock).toFixed(1)}</div>
-                        <div style={{ flex: '1 1 10%' }}>{isNaN(parseFloat(row.boost_clock)) ? 'N/A' : parseFloat(row.boost_clock).toFixed(1)}</div> {/* Display "N/A" if NaN */}
+                        <div style={{ flex: '1 1 10%' }}>{isNaN(parseFloat(row.boost_clock)) ? 'N/A' : parseFloat(row.boost_clock).toFixed(1)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.microarchitecture}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.tdp}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.graphics}</div>
