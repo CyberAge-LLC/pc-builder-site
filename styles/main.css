@@ -60,28 +60,37 @@ p a {
 
 
 .pagination-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px; /* Space above pagination */
-}
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Space above pagination */
+  }
+  
+  .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
 
-.pagination {
-  display: flex; /* Use flexbox for horizontal alignment */
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+  .pagination-item {
+    margin: 0 5px;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #f4f4f4;
+    transition: background-color 0.3s ease, border 0.3s ease;
+  }
 
-.pagination-item {
-  margin: 0 5px; /* Space between items */
-  padding: 5px 10px; /* Padding around the page numbers */
-  border: 1px solid #ccc; /* Optional border */
-  border-radius: 5px; /* Optional rounded corners */
-  cursor: pointer; /* Change cursor to pointer */
-}
+  .pagination-item:hover {
+    background-color: #2a2a2a;
+    color: white;
+    border: 1px solid #2a2a2a;
+  }
 
-.active {
-  font-weight: bold; /* Style for active page */
-  background-color: #2a2a2a; /* Highlight active page */
-  color: white; /* Text color for active page */
-}
+  .active {
+    background-color: #2a2a2a;
+    color: white;
+    font-weight: bold;
+    border: 1px solid #2a2a2a;
+  }

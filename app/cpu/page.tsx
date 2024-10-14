@@ -30,54 +30,44 @@ export default function CPUTable() {
   const [data, setData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'ascending' | 'descending' } | null>(null);
-  const rowsPerPage = 100; // Display 100 rows per page
+  const rowsPerPage = 100; // Define how many rows per page
+  const [sortConfig, setSortConfig] = useState<{ key: keyof TableRow; direction: 'ascending' | 'descending' } | null>(null);
 
   useEffect(() => {
     fetchData();
   }, [page, sortConfig]);
 
   const fetchData = async () => {
-    const { data: fetchedData, error } = await supabase
+    // Fetch total row count to calculate total pages
+    const { count, error: countError } = await supabase
       .from('cpu')
-      .select('*');
+      .select('*', { count: 'exact', head: true });
+
+    if (countError || count === null) {
+      console.error('Error fetching row count:', countError);
+      return;
+    }
+
+    const totalPages = Math.ceil(count / rowsPerPage);
+    setTotalPages(totalPages);
+
+    // Fetch data
+    const { data: rows, error } = await supabase
+      .from('cpu')
+      .select('*')
+      .range(page * rowsPerPage, (page + 1) * rowsPerPage - 1);
 
     if (error) {
       console.error('Error fetching data:', error);
     } else {
-      const filteredData = (fetchedData || []).filter((row) => {
-        // Remove rows with NaN in critical columns
-        return (
-          !isNaN(parseFloat(row.price)) &&
-          !isNaN(parseFloat(row.core_count)) &&
-          !isNaN(parseFloat(row.core_clock)) &&
-          !isNaN(parseFloat(row.boost_clock)) &&
-          !isNaN(parseFloat(row.tdp))
-        );
-      });
+      // Filter out rows with NaN values
+      const filteredRows = rows?.filter(row => 
+        !isNaN(parseFloat(row.price)) && 
+        !isNaN(parseInt(row.core_count)) && 
+        !isNaN(parseInt(row.tdp))
+      ) || [];
 
-      if (sortConfig) {
-        const sortedData = [...filteredData].sort((a, b) => {
-          const aValue = sortConfig.key === 'price' || sortConfig.key === 'core_clock' || sortConfig.key === 'boost_clock' || sortConfig.key === 'tdp'
-            ? parseFloat(a[sortConfig.key])
-            : parseInt(a[sortConfig.key], 10);
-
-          const bValue = sortConfig.key === 'price' || sortConfig.key === 'core_clock' || sortConfig.key === 'boost_clock' || sortConfig.key === 'tdp'
-            ? parseFloat(b[sortConfig.key])
-            : parseInt(b[sortConfig.key], 10);
-
-          if (sortConfig.direction === 'ascending') {
-            return aValue - bValue;
-          } else {
-            return bValue - aValue;
-          }
-        });
-        setData(sortedData);
-      } else {
-        setData(filteredData);
-      }
-
-      setTotalPages(Math.ceil(filteredData.length / rowsPerPage));
+      setData(filteredRows);
     }
   };
 
@@ -85,26 +75,38 @@ export default function CPUTable() {
     setPage(event.selected);
   };
 
-  const handleSort = (key: string) => {
+  const handleSort = (key: keyof TableRow) => {
     let direction: 'ascending' | 'descending' = 'ascending';
-    
-    // Toggle the direction if the same key is clicked
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
       direction = 'descending';
     }
 
-    // Set the new sort configuration and reset to the first page (page 0)
     setSortConfig({ key, direction });
-    setPage(0);  // Reset to the first page when a sort button is clicked
+    setPage(0); // Reset to page 0 when sorting
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [page, sortConfig]); // Ensure sorting resets and applies when sortConfig changes
+  const sortedData = React.useMemo(() => {
+    if (sortConfig !== null) {
+      const { key, direction } = sortConfig;
 
-  const hasData = Array.isArray(data) && data.length > 0;
+      return [...data].sort((a, b) => {
+        const aValue = key === 'price' ? parseFloat(a[key]) : 
+                        key === 'core_count' || key === 'tdp' ? parseInt(a[key]) : 
+                        a[key];
 
-  const paginatedData = data.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+        const bValue = key === 'price' ? parseFloat(b[key]) : 
+                        key === 'core_count' || key === 'tdp' ? parseInt(b[key]) : 
+                        b[key];
+
+        if (isNaN(aValue) || isNaN(bValue)) return 0;
+
+        return direction === 'ascending' ? aValue - bValue : bValue - aValue;
+      });
+    }
+    return data;
+  }, [data, sortConfig]);
+
+  const hasData = sortedData.length > 0;
 
   return (
     <section className="bg-black">
@@ -121,20 +123,19 @@ export default function CPUTable() {
           <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ display: 'flex', textAlign: 'left', backgroundColor: '#2a2a2a' }}>
-                {['name', 'price', 'core_count', 'core_clock', 'boost_clock', 'microarchitecture', 'tdp', 'graphics'].map((column) => (
-                  <th
-                    key={column}
-                    style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
-                    onClick={() => handleSort(column)}
-                  >
-                    {column.charAt(0).toUpperCase() + column.slice(1)}
-                  </th>
-                ))}
+                <th onClick={() => handleSort('name')} style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Name</th>
+                <th onClick={() => handleSort('price')} style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Price</th>
+                <th onClick={() => handleSort('core_count')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Core Count</th>
+                <th onClick={() => handleSort('core_clock')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Core Clock</th>
+                <th onClick={() => handleSort('boost_clock')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Boost Clock</th>
+                <th onClick={() => handleSort('microarchitecture')} style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Microarchitecture</th>
+                <th onClick={() => handleSort('tdp')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>TDP</th>
+                <th onClick={() => handleSort('graphics')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Graphics</th>
               </tr>
             </thead>
             <tbody>
               {hasData ? (
-                paginatedData.map((row) => (
+                sortedData.slice(page * rowsPerPage, (page + 1) * rowsPerPage).map((row) => (
                   <tr key={row.id}>
                     <td colSpan={8}>
                       <button
@@ -144,15 +145,11 @@ export default function CPUTable() {
                           border: 'none',
                           padding: '10px',
                           cursor: 'pointer',
+                          outline: 'none',
+                          transition: 'background 0.3s',
                           display: 'flex',
                           justifyContent: 'space-between',
                           alignItems: 'center',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = '#2a2a2a';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'none';
                         }}
                       >
                         <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.name}</span>
@@ -187,6 +184,7 @@ export default function CPUTable() {
               marginPagesDisplayed={2}
               pageRangeDisplayed={3}
               onPageChange={handlePageClick}
+              forcePage={page}
               containerClassName={'pagination'}
               activeClassName={'active'}
               pageClassName={'pagination-item'}
@@ -195,34 +193,46 @@ export default function CPUTable() {
               breakClassName={'pagination-item'}
             />
           </div>
+
+          <style jsx>{`
+            .pagination-container {
+              display: flex;
+              justify-content: center;
+              margin-top: 20px; /* Space above pagination */
+            }
+            
+            .pagination {
+              display: flex;
+              list-style: none;
+              padding: 0;
+              margin: 0;
+            }
+
+            .pagination-item {
+              margin: 0 5px;
+              padding: 10px 15px;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              cursor: pointer;
+              background-color: #f4f4f4;
+              transition: background-color 0.3s ease, border 0.3s ease;
+            }
+
+            .pagination-item:hover {
+              background-color: #2a2a2a;
+              color: white;
+              border: 1px solid #2a2a2a;
+            }
+
+            .active {
+              background-color: #2a2a2a;
+              color: white;
+              font-weight: bold;
+              border: 1px solid #2a2a2a;
+            }
+          `}</style>
         </div>
       </div>
-
-      {/* Styles for Pagination */}
-      <style jsx>{`
-        .pagination-container {
-          display: flex;
-          justify-content: center;
-          margin-top: 20px; /* Space above pagination */
-        }
-        .pagination {
-          display: flex;
-          list-style: none;
-          padding: 0;
-          gap: 5px;
-        }
-        .pagination-item {
-          padding: 10px;
-          border: 1px solid #ccc;
-          cursor: pointer;
-          background-color: #333;
-          color: white;
-        }
-        .pagination-item.active {
-          background-color: #007bff;
-          color: white;
-        }
-      `}</style>
     </section>
   );
 }
