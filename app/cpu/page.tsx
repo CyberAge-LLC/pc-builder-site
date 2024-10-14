@@ -55,7 +55,7 @@ export default function CPUTable() {
     ) || [];
 
     // Use a fallback for count to prevent null error
-    const totalRowCount = count ?? 0; // Default to 0 if count is null
+    const totalRowCount = count ?? 0;
     setData(filteredRows);
     setTotalPages(Math.ceil(totalRowCount / rowsPerPage));
     setLoading(false);
@@ -73,39 +73,35 @@ export default function CPUTable() {
 
     setSortConfig({ key, direction });
     setPage(0); // Reset to page 0 when sorting
+    sortData(key, direction); // Sort the data immediately
   };
 
-  const sortedData = React.useMemo(() => {
-    let sortableData = [...data];
+  const sortData = (key: keyof TableRow, direction: 'ascending' | 'descending') => {
+    const sorted = [...data].sort((a, b) => {
+      let aValue: number;
+      let bValue: number;
 
-    if (sortConfig) {
-      const { key, direction } = sortConfig;
+      if (key === 'price') {
+        aValue = parseFloat(a[key] as string);
+        bValue = parseFloat(b[key] as string);
+      } else {
+        aValue = parseInt(a[key] as string);
+        bValue = parseInt(b[key] as string);
+      }
 
-      sortableData.sort((a, b) => {
-        let aValue: number;
-        let bValue: number;
+      if (isNaN(aValue) || isNaN(bValue)) return 0;
 
-        if (key === 'price') {
-          aValue = parseFloat(a[key] as string);
-          bValue = parseFloat(b[key] as string);
-        } else {
-          aValue = parseInt(a[key] as string);
-          bValue = parseInt(b[key] as string);
-        }
+      return direction === 'ascending' ? aValue - bValue : bValue - aValue;
+    });
 
-        if (isNaN(aValue) || isNaN(bValue)) return 0;
-
-        return direction === 'ascending' ? aValue - bValue : bValue - aValue;
-      });
-    }
-
-    return sortableData;
-  }, [data, sortConfig]);
+    setData(sorted);
+    setTotalPages(Math.ceil(sorted.length / rowsPerPage)); // Update total pages based on sorted data
+  };
 
   const paginatedData = React.useMemo(() => {
     const start = page * rowsPerPage;
-    return sortedData.slice(start, start + rowsPerPage);
-  }, [sortedData, page, rowsPerPage]);
+    return data.slice(start, start + rowsPerPage);
+  }, [data, page, rowsPerPage]);
 
   return (
     <section className="bg-black">
