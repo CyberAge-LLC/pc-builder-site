@@ -85,12 +85,14 @@ export default function CPUTable() {
     setPage(0); // Reset to page 0 when sorting
   };
 
+  // Memoize sorted data
   const sortedData = React.useMemo(() => {
+    let sortableData = [...data];
+
     if (sortConfig !== null) {
       const { key, direction } = sortConfig;
 
-      return [...data].sort((a, b) => {
-        // Determine aValue based on key type
+      sortableData.sort((a, b) => {
         let aValue: number | null = null;
         let bValue: number | null = null;
 
@@ -106,16 +108,23 @@ export default function CPUTable() {
         }
 
         // Check if values are NaN, if so, omit them from sorting
-        if (isNaN(aValue!) || isNaN(bValue!)) return 0; // Use ! to assert that aValue and bValue are not undefined
+        if (isNaN(aValue!) || isNaN(bValue!)) return 0;
 
         return direction === 'ascending' ? aValue - bValue : bValue - aValue;
       });
     }
-    return data;
+
+    return sortableData;
   }, [data, sortConfig]);
 
+  // Calculate paginated data
+  const paginatedData = React.useMemo(() => {
+    const start = page * rowsPerPage;
+    const end = start + rowsPerPage;
+    return sortedData.slice(start, end);
+  }, [sortedData, page, rowsPerPage]);
 
-  const hasData = sortedData.length > 0;
+  const hasData = paginatedData.length > 0;
 
   return (
     <section className="bg-black">
@@ -144,102 +153,46 @@ export default function CPUTable() {
             </thead>
             <tbody>
               {hasData ? (
-                sortedData.slice(page * rowsPerPage, (page + 1) * rowsPerPage).map((row) => (
-                  <tr key={row.id}>
-                    <td colSpan={8}>
-                      <button
-                        style={{
-                          width: '100%',
-                          background: 'none',
-                          border: 'none',
-                          padding: '10px',
-                          cursor: 'pointer',
-                          outline: 'none',
-                          transition: 'background 0.3s',
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.name}</span>
-                        <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{parseFloat(row.price).toFixed(2)}</span>
-                        <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_count}</span>
-                        <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_clock}</span>
-                        <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.boost_clock}</span>
-                        <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.microarchitecture}</span>
-                        <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.tdp}</span>
-                        <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.graphics}</span>
-                      </button>
-                    </td>
+                paginatedData.map((row) => (
+                  <tr key={row.id} style={{ display: 'flex', backgroundColor: '#1a1a1a', color: 'white', borderBottom: '1px solid #444' }}>
+                    <td style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.name}</td>
+                    <td style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{parseFloat(row.price).toFixed(2)}</td>
+                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_count}</td>
+                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_clock}</td>
+                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.boost_clock}</td>
+                    <td style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.microarchitecture}</td>
+                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.tdp}</td>
+                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.graphics}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={8} className="text-center">
+                  <td colSpan={8} style={{ padding: '10px', textAlign: 'center', color: 'white' }}>
                     No data available
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
+        </div>
 
-          {/* Pagination Component */}
-          <div className="pagination-container">
-            <ReactPaginate
-              previousLabel={'Previous'}
-              nextLabel={'Next'}
-              breakLabel={'...'}
-              pageCount={totalPages}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={3}
-              onPageChange={handlePageClick}
-              forcePage={page}
-              containerClassName={'pagination'}
-              activeClassName={'active'}
-              pageClassName={'pagination-item'}
-              previousClassName={'pagination-item'}
-              nextClassName={'pagination-item'}
-              breakClassName={'pagination-item'}
-            />
-          </div>
-
-          <style jsx>{`
-            .pagination-container {
-              display: flex;
-              justify-content: center;
-              margin-top: 20px; /* Space above pagination */
-            }
-            
-            .pagination {
-              display: flex;
-              list-style: none;
-              padding: 0;
-              margin: 0;
-            }
-
-            .pagination-item {
-              margin: 0 5px;
-              padding: 10px 15px;
-              border: 1px solid #ccc;
-              border-radius: 4px;
-              cursor: pointer;
-              background-color: #f4f4f4;
-              transition: background-color 0.3s ease, border 0.3s ease;
-            }
-
-            .pagination-item:hover {
-              background-color: #2a2a2a;
-              color: white;
-              border: 1px solid #2a2a2a;
-            }
-
-            .active {
-              background-color: #2a2a2a;
-              color: white;
-              font-weight: bold;
-              border: 1px solid #2a2a2a;
-            }
-          `}</style>
+        {/* Pagination controls */}
+        <div className="flex justify-center mt-6">
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel="Next >"
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={2}
+            pageCount={totalPages}
+            previousLabel="< Previous"
+            renderOnZeroPageCount={null}
+            className="flex items-center"
+            activeClassName="bg-blue-500 text-white"
+            previousClassName="mx-2 px-4 py-2 border rounded-md cursor-pointer bg-gray-700 text-white hover:bg-gray-600"
+            nextClassName="mx-2 px-4 py-2 border rounded-md cursor-pointer bg-gray-700 text-white hover:bg-gray-600"
+            pageClassName="mx-1"
+            pageLinkClassName="px-4 py-2 border rounded-md cursor-pointer bg-gray-800 text-white hover:bg-gray-700"
+          />
         </div>
       </div>
     </section>
