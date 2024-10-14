@@ -82,8 +82,12 @@ export default function CPUTable() {
     if (sortConfig !== null) {
       const { key, direction } = sortConfig;
       return [...data].sort((a, b) => {
-        const aValue = key === 'price' ? parseFloat(a[key]) : key === 'core_count' || key === 'tdp' ? parseInt(a[key]) : parseFloat(a[key]);
-        const bValue = key === 'price' ? parseFloat(b[key]) : key === 'core_count' || key === 'tdp' ? parseInt(b[key]) : parseFloat(b[key]);
+        const aValue = key === 'price' ? parseFloat(a[key] as string) :
+                        key === 'core_count' || key === 'tdp' ? parseInt(a[key] as string) :
+                        parseFloat(a[key] as string);
+        const bValue = key === 'price' ? parseFloat(b[key] as string) :
+                        key === 'core_count' || key === 'tdp' ? parseInt(b[key] as string) :
+                        parseFloat(b[key] as string);
 
         if (direction === 'ascending') {
           return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
