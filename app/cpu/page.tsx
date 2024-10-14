@@ -80,7 +80,7 @@ export default function CPUTable() {
         <LogoCloud />
 
         <div>
-          <table border=1 width="100%">
+          <table border="1" width="100%" style={{ borderCollapse: 'collapse' }}>
             <thead>
               <tr>
                 <th>Column 1</th>
