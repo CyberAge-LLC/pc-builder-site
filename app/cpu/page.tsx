@@ -31,7 +31,7 @@ export default function CPUTable() {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [sortConfig, setSortConfig] = useState<{ key: keyof TableRow; direction: 'ascending' | 'descending' } | null>(null);
-  const rowsPerPage = 10; // Define how many rows per page
+  const rowsPerPage = 100; // Set to 100 rows per page
 
   useEffect(() => {
     fetchData();
@@ -77,7 +77,9 @@ export default function CPUTable() {
       direction = sortConfig.direction === 'ascending' ? 'descending' : 'ascending';
     }
 
+    // Update sort configuration and reset to first page
     setSortConfig({ key, direction });
+    setPage(0); // Reset to the first page on sort
   };
 
   const sortedData = () => {
@@ -220,7 +222,7 @@ export default function CPUTable() {
                           alignItems: 'center',
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.background = '#2a2a2a'; // Change background on hover
+                          e.currentTarget.style.background = '#444'; // Highlight background on hover
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.background = 'none'; // Revert background on leave
