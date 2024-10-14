@@ -70,14 +70,16 @@ export default function CPUTable() {
 
     const { key, direction } = sortConfig;
     return [...rows].sort((a, b) => {
+      // Check if the key corresponds to a numeric value
       if (key === 'price' || key === 'core_count' || key === 'core_clock' || key === 'boost_clock' || key === 'tdp') {
         return direction === 'ascending'
-          ? parseFloat(a[key]) - parseFloat(b[key])
-          : parseFloat(b[key]) - parseFloat(a[key]);
+          ? parseFloat(a[key] as string) - parseFloat(b[key] as string)
+          : parseFloat(b[key] as string) - parseFloat(a[key] as string);
       } else {
+        // Here we know it should be a string
         return direction === 'ascending'
-          ? a[key].localeCompare(b[key])
-          : b[key].localeCompare(a[key]);
+          ? (a[key] as string).localeCompare(b[key] as string)
+          : (b[key] as string).localeCompare(a[key] as string);
       }
     });
   };
