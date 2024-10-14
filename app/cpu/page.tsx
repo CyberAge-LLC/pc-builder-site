@@ -104,4 +104,91 @@ export default function CPUTable() {
                 data.map((row) => (
                   <tr key={row.id}>
                     <td colSpan={8}>
-         
+                      <button
+                        onClick={() => handleRowClick(row)}
+                        style={{
+                          width: '100%',
+                          background: 'none',
+                          border: 'none',
+                          padding: '10px',
+                          textAlign: 'left',
+                          cursor: 'pointer',
+                          outline: 'none',
+                          transition: 'background 0.3s',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center', // Center content vertically
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = '#2a2a2a'; // Change background on hover
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'none'; // Revert background on mouse leave
+                        }}
+                      >
+                        <span style={{ flex: 1 }}>{row.name}</span>
+                        <span style={{ flex: 1 }}>{row.price}</span>
+                        <span style={{ flex: 1 }}>{row.core_count}</span>
+                        <span style={{ flex: 1 }}>{row.core_clock}</span>
+                        <span style={{ flex: 1 }}>{row.boost_clock}</span>
+                        <span style={{ flex: 1 }}>{row.microarchitecture}</span>
+                        <span style={{ flex: 1 }}>{row.tdp}</span>
+                        <span style={{ flex: 1 }}>{row.graphics}</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={8} className="text-center">
+                    No data available
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+
+          {/* Pagination Component */}
+          <div className="pagination-container">
+            <ReactPaginate
+              previousLabel={'Previous'}
+              nextLabel={'Next'}
+              breakLabel={'...'}
+              pageCount={totalPages}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={3}
+              onPageChange={handlePageClick}
+              containerClassName={'pagination'}
+              activeClassName={'active'}
+              pageClassName={'pagination-item'}
+              previousClassName={'pagination-item'}
+              nextClassName={'pagination-item'}
+              breakClassName={'pagination-item'}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Styles for Pagination */}
+      <style jsx>{`
+        .pagination-container {
+          display: flex;
+          justify-content: center;
+          margin-top: 20px; /* Space above pagination */
+        }
+        .pagination {
+          display: flex;
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+        .pagination-item {
+          margin: 0 5px; /* Space between items */
+        }
+        .active {
+          font-weight: bold; /* Style for active page */
+        }
+      `}</style>
+    </section>
+  );
+}
