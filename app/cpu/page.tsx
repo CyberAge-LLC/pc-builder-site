@@ -28,7 +28,7 @@ export default function CPUTable() {
       .from('cpu')
       .select('*', { count: 'exact', head: true });
 
-    if (countError) {
+    if (countError || count === null) {
       console.error('Error fetching row count:', countError);
       return;
     }
