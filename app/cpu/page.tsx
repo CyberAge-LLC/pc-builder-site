@@ -39,7 +39,7 @@ export default function CPUTable() {
   const fetchData = async () => {
     // Fetch total row count to calculate total pages
     const { count, error: countError } = await supabase
-      .from('cpu') // Ensure this table name is correct
+      .from('cpu')
       .select('*', { count: 'exact', head: true });
 
     if (countError || count === null) {
