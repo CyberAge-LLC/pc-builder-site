@@ -6,7 +6,7 @@ import ReactPaginate from 'react-paginate';
 
 export default function CPUTable() {
   const supabaseUrl = "https://ogsbootxscuhnzosbkuy.supabase.co";
-  const supabaseAnonKey = "YOUR_ANON_KEY"; // Replace with your actual anon key
+  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3Nia3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0"; // Replace with your actual anon key
 
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -36,6 +36,7 @@ export default function CPUTable() {
   const fetchData = async () => {
     setLoading(true);
     
+    // Fetch all data from the database
     const { data: rows, count, error } = await supabase
       .from('cpu')
       .select('*', { count: 'exact' });
@@ -52,6 +53,7 @@ export default function CPUTable() {
       !isNaN(parseInt(row.tdp))
     ) || [];
 
+    // Use a fallback for count to prevent null error
     const totalRowCount = count ?? 0;
     setData(filteredRows);
     setTotalPages(Math.ceil(totalRowCount / rowsPerPage));
@@ -95,11 +97,6 @@ export default function CPUTable() {
     setTotalPages(Math.ceil(sorted.length / rowsPerPage)); // Update total pages based on sorted data
   };
 
-  const handleSelect = (row: TableRow) => {
-    // Handle the select action here (e.g., show a modal, log the selected item, etc.)
-    console.log('Selected row:', row);
-  };
-
   const paginatedData = React.useMemo(() => {
     const start = page * rowsPerPage;
     return data.slice(start, start + rowsPerPage);
@@ -127,13 +124,12 @@ export default function CPUTable() {
                     {key.charAt(0).toUpperCase() + key.slice(1)}
                   </th>
                 ))}
-                <th style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white' }}>Select</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={9} style={{ padding: '10px', textAlign: 'center', color: 'white' }}>
+                  <td colSpan={8} style={{ padding: '10px', textAlign: 'center', color: 'white' }}>
                     Loading...
                   </td>
                 </tr>
@@ -148,19 +144,11 @@ export default function CPUTable() {
                     <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.microarchitecture}</td>
                     <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.tdp}</td>
                     <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.graphics}</td>
-                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>
-                      <button 
-                        onClick={() => handleSelect(row)} 
-                        style={{ padding: '5px 10px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                      >
-                        Select
-                      </button>
-                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={9} style={{ padding: '10px', textAlign: 'center', color: 'white' }}>
+                  <td colSpan={8} style={{ padding: '10px', textAlign: 'center', color: 'white' }}>
                     No data available
                   </td>
                 </tr>
