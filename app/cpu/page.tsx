@@ -82,6 +82,9 @@ export default function CPUTable() {
       if (key === 'price') {
         aValue = parseFloat(a[key] as string);
         bValue = parseFloat(b[key] as string);
+      } else if (key === 'core_clock' || key === 'boost_clock') {
+        aValue = parseFloat(a[key] as string);
+        bValue = parseFloat(b[key] as string);
       } else {
         aValue = parseInt(a[key] as string);
         bValue = parseInt(b[key] as string);
@@ -162,8 +165,8 @@ export default function CPUTable() {
                         <div style={{ flex: '1 1 10%' }}>{row.name}</div>
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price).toFixed(2)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.core_count}</div>
-                        <div style={{ flex: '1 1 10%' }}>{row.core_clock}</div>
-                        <div style={{ flex: '1 1 10%' }}>{row.boost_clock}</div>
+                        <div style={{ flex: '1 1 10%' }}>{parseFloat(row.core_clock).toFixed(1)}</div> {/* One decimal point */}
+                        <div style={{ flex: '1 1 10%' }}>{parseFloat(row.boost_clock).toFixed(1)}</div> {/* One decimal point */}
                         <div style={{ flex: '1 1 10%' }}>{row.microarchitecture}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.tdp}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.graphics}</div>
