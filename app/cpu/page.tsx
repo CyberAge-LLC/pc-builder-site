@@ -90,21 +90,30 @@ export default function CPUTable() {
       const { key, direction } = sortConfig;
 
       return [...data].sort((a, b) => {
-        const aValue = key === 'price' ? parseFloat(a[key]) : 
-                        key === 'core_count' || key === 'tdp' ? parseInt(a[key]) : 
-                        a[key];
+        // Determine aValue based on key type
+        let aValue: number | null = null;
+        let bValue: number | null = null;
 
-        const bValue = key === 'price' ? parseFloat(b[key]) : 
-                        key === 'core_count' || key === 'tdp' ? parseInt(b[key]) : 
-                        b[key];
+        if (key === 'price') {
+          aValue = parseFloat(a[key]);
+          bValue = parseFloat(b[key]);
+        } else if (key === 'core_count' || key === 'tdp') {
+          aValue = parseInt(a[key]);
+          bValue = parseInt(b[key]);
+        } else {
+          aValue = a[key] as unknown as number;
+          bValue = b[key] as unknown as number;
+        }
 
-        if (isNaN(aValue) || isNaN(bValue)) return 0;
+        // Check if values are NaN, if so, omit them from sorting
+        if (isNaN(aValue!) || isNaN(bValue!)) return 0; // Use ! to assert that aValue and bValue are not undefined
 
         return direction === 'ascending' ? aValue - bValue : bValue - aValue;
       });
     }
     return data;
   }, [data, sortConfig]);
+
 
   const hasData = sortedData.length > 0;
 
