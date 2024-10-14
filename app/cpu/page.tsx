@@ -30,7 +30,7 @@ export default function CPUTable() {
   const [data, setData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const rowsPerPage = 10; // Define how many rows per page
+  const rowsPerPage = 100; // Define how many rows per page
 
   useEffect(() => {
     fetchData();
