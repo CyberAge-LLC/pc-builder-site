@@ -12,14 +12,16 @@ export default function CPUTable() {
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
   type TableRow = {
-    col1: string;
-    col2: string;
-    col3: string;
-    col4: string;
-    col5: string;
-    col6: string;
-    col7: string;
-    col8: string;
+    id: number;
+    created_at: string;
+    name: string;
+    price: string;
+    core_count: string;
+    core_clock: string;
+    boost_clock: string;
+    microarchitecture: string;
+    tdp: string;
+    graphics: string;
   };
 
   interface PageClickEvent {
@@ -80,31 +82,31 @@ export default function CPUTable() {
         <LogoCloud />
 
         <div>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table border="1" width="100%" style={{ borderCollapse: 'collapse' }}>
             <thead>
               <tr>
-                <th style={{ border: '1px solid #ccc' }}>Column 1</th>
-                <th style={{ border: '1px solid #ccc' }}>Column 2</th>
-                <th style={{ border: '1px solid #ccc' }}>Column 3</th>
-                <th style={{ border: '1px solid #ccc' }}>Column 4</th>
-                <th style={{ border: '1px solid #ccc' }}>Column 5</th>
-                <th style={{ border: '1px solid #ccc' }}>Column 6</th>
-                <th style={{ border: '1px solid #ccc' }}>Column 7</th>
-                <th style={{ border: '1px solid #ccc' }}>Column 8</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Core Count</th>
+                <th>Core Clock</th>
+                <th>Boost Clock</th>
+                <th>Microarchitecture</th>
+                <th>TDP</th>
+                <th>Graphics</th>
               </tr>
             </thead>
             <tbody>
               {hasData ? (
-                data.map((row, index) => (
-                  <tr key={index}>
-                    <td style={{ border: '1px solid #ccc' }}>{row.col1}</td>
-                    <td style={{ border: '1px solid #ccc' }}>{row.col2}</td>
-                    <td style={{ border: '1px solid #ccc' }}>{row.col3}</td>
-                    <td style={{ border: '1px solid #ccc' }}>{row.col4}</td>
-                    <td style={{ border: '1px solid #ccc' }}>{row.col5}</td>
-                    <td style={{ border: '1px solid #ccc' }}>{row.col6}</td>
-                    <td style={{ border: '1px solid #ccc' }}>{row.col7}</td>
-                    <td style={{ border: '1px solid #ccc' }}>{row.col8}</td>
+                data.map((row) => (
+                  <tr key={row.id}>
+                    <td>{row.name}</td>
+                    <td>{row.price}</td>
+                    <td>{row.core_count}</td>
+                    <td>{row.core_clock}</td>
+                    <td>{row.boost_clock}</td>
+                    <td>{row.microarchitecture}</td>
+                    <td>{row.tdp}</td>
+                    <td>{row.graphics}</td>
                   </tr>
                 ))
               ) : (
