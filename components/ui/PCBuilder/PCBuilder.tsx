@@ -12,52 +12,52 @@ export default function PCBuilder() {
         <div className="sm:flex sm:flex-col sm:align-center">
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '8vh' }}>
             <Link href="./cpu" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}>
-              <Button>Central Processing Unit (CPU)</Button>
+              <Button style={{ width: '100%' }}>Central Processing Unit (CPU)</Button>
             </Link>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '8vh' }}>
             <Link href="./gpu" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}>
-    	        <Button>Graphics Processing Unit (GPU)</Button>
+    	        <Button style={{ width: '100%' }}>Graphics Processing Unit (GPU)</Button>
             </Link>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '8vh' }}>
             <Link href="./motherboard" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}>
-              <Button>Motherboard</Button>
+              <Button style={{ width: '100%' }}>Motherboard</Button>
             </Link>
           </div>  
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '8vh' }}>
             <Link href="./ram" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}>
-              <Button>Random Access Memory (RAM)</Button>
+              <Button style={{ width: '100%' }}>Random Access Memory (RAM)</Button>
             </Link>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '8vh' }}>  
             <Link href="./storage" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}>
-              <Button>Storage</Button>
+              <Button style={{ width: '100%' }}>Storage</Button>
             </Link>
           </div> 
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '8vh' }}>
             <Link href="./psu" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}>
-              <Button>Power Supply Unit (PSU)</Button>
+              <Button style={{ width: '100%' }}>Power Supply Unit (PSU)</Button>
             </Link>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '8vh' }}>
             <Link href="./cooling" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}>
-              <Button>Cooling System</Button>
+              <Button style={{ width: '100%' }}>Cooling System</Button>
             </Link>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '8vh' }}>
             <Link href="./case" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}>
-              <Button>Case (Chassis)</Button>
+              <Button style={{ width: '100%' }}>Case (Chassis)</Button>
             </Link>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '8vh' }}>
             <Link href="./os" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}>
-              <Button>Operating System (OS)</Button>
+              <Button style={{ width: '100%' }}>Operating System (OS)</Button>
             </Link>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '8vh' }}>
             <Link href="./peripherals" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}>
-              <Button>Peripherals (Monitor, Keyboad, Mouse, Etc.)</Button>
+              <Button style={{ width: '100%' }}>Peripherals (Monitor, Keyboad, Mouse, Etc.)</Button>
             </Link>
           </div>  
         </div>
