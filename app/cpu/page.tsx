@@ -67,6 +67,11 @@ export default function CPUTable() {
     setPage(event.selected);
   };
 
+  const handleRowClick = (row: TableRow) => {
+    // Handle the row click, you can navigate to another page or perform an action
+    console.log('Row clicked:', row);
+  };
+
   const hasData = Array.isArray(data) && data.length > 0;
 
   return (
@@ -98,14 +103,38 @@ export default function CPUTable() {
               {hasData ? (
                 data.map((row) => (
                   <tr key={row.id}>
-                    <td>{row.name}</td>
-                    <td>{row.price}</td>
-                    <td>{row.core_count}</td>
-                    <td>{row.core_clock}</td>
-                    <td>{row.boost_clock}</td>
-                    <td>{row.microarchitecture}</td>
-                    <td>{row.tdp}</td>
-                    <td>{row.graphics}</td>
+                    <td colSpan={8}>
+                      <button
+                        onClick={() => handleRowClick(row)}
+                        style={{
+                          width: '100%',
+                          background: 'none',
+                          border: 'none',
+                          padding: '10px',
+                          textAlign: 'left',
+                          cursor: 'pointer',
+                          outline: 'none',
+                          transition: 'background 0.3s',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = '#2a2a2a'; // Change background on hover
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'none'; // Revert background on mouse leave
+                        }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span>{row.name}</span>
+                          <span>{row.price}</span>
+                          <span>{row.core_count}</span>
+                          <span>{row.core_clock}</span>
+                          <span>{row.boost_clock}</span>
+                          <span>{row.microarchitecture}</span>
+                          <span>{row.tdp}</span>
+                          <span>{row.graphics}</span>
+                        </div>
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
