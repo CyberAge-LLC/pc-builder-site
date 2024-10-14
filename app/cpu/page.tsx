@@ -1,4 +1,4 @@
-'use client';
+"use client"; // Ensures this is a client component
 
 import { createClient } from '@supabase/supabase-js';
 import React, { useEffect, useState } from 'react';
