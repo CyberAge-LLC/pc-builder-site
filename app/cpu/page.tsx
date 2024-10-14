@@ -88,17 +88,25 @@ export default function CPUTable() {
       const { key, direction } = sortConfig;
 
       sortableData.sort((a, b) => {
-        let aValue = key === 'price' ? parseFloat(a[key]) : parseInt(a[key]);
-        let bValue = key === 'price' ? parseFloat(b[key]) : parseInt(b[key]);
+        let aValue: number;
+        let bValue: number;
+
+        if (key === 'price') {
+          aValue = parseFloat(a[key] as string);
+          bValue = parseFloat(b[key] as string);
+        } else {
+          aValue = parseInt(a[key] as string);
+          bValue = parseInt(b[key] as string);
+        }
 
         if (isNaN(aValue) || isNaN(bValue)) return 0;
 
         return direction === 'ascending' ? aValue - bValue : bValue - aValue;
       });
-    }
+  }
 
-    return sortableData;
-  }, [data, sortConfig]);
+  return sortableData;
+}, [data, sortConfig]);
 
   const paginatedData = React.useMemo(() => {
     const start = page * rowsPerPage;
