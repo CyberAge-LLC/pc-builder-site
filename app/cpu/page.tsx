@@ -7,7 +7,7 @@ import ReactPaginate from 'react-paginate';
 
 export default function CPUTable() {
   const supabaseUrl = "https://ogsbootxscuhnzosbkuy.supabase.co";
-  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3Nia3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0"; // Use your actual anon key
+  const supabaseAnonKey = "YOUR_ANON_KEY"; // Use your actual anon key
 
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -104,90 +104,4 @@ export default function CPUTable() {
                 data.map((row) => (
                   <tr key={row.id}>
                     <td colSpan={8}>
-                      <button
-                        onClick={() => handleRowClick(row)}
-                        style={{
-                          width: '100%',
-                          background: 'none',
-                          border: 'none',
-                          padding: '10px',
-                          textAlign: 'left',
-                          cursor: 'pointer',
-                          outline: 'none',
-                          transition: 'background 0.3s',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = '#2a2a2a'; // Change background on hover
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'none'; // Revert background on mouse leave
-                        }}
-                      >
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          <span>{row.name}</span>
-                          <span>{row.price}</span>
-                          <span>{row.core_count}</span>
-                          <span>{row.core_clock}</span>
-                          <span>{row.boost_clock}</span>
-                          <span>{row.microarchitecture}</span>
-                          <span>{row.tdp}</span>
-                          <span>{row.graphics}</span>
-                        </div>
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={8} className="text-center">
-                    No data available
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-
-          {/* Pagination Component */}
-          <div className="pagination-container">
-            <ReactPaginate
-              previousLabel={'Previous'}
-              nextLabel={'Next'}
-              breakLabel={'...'}
-              pageCount={totalPages}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={3}
-              onPageChange={handlePageClick}
-              containerClassName={'pagination'}
-              activeClassName={'active'}
-              pageClassName={'pagination-item'}
-              previousClassName={'pagination-item'}
-              nextClassName={'pagination-item'}
-              breakClassName={'pagination-item'}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Styles for Pagination */}
-      <style jsx>{`
-        .pagination-container {
-          display: flex;
-          justify-content: center;
-          margin-top: 20px; /* Space above pagination */
-        }
-        .pagination {
-          display: flex;
-          list-style: none;
-          padding: 0;
-          margin: 0;
-        }
-        .pagination-item {
-          margin: 0 5px; /* Space between items */
-        }
-        .active {
-          font-weight: bold; /* Style for active page */
-        }
-      `}</style>
-    </section>
-  );
-}
+         
