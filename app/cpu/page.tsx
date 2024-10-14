@@ -7,7 +7,7 @@ import ReactPaginate from 'react-paginate';
 
 export default function CPUTable() {
   const supabaseUrl = "https://ogsbootxscuhnzosbkuy.supabase.co";
-  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3Nia3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0"; // Use your actual anon key
+  const supabaseAnonKey = "YOUR_ANON_KEY"; // Use your actual anon key
 
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -88,15 +88,15 @@ export default function CPUTable() {
         <div>
           <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ display: 'flex', justifyContent: 'space-between', textAlign: 'left' }}>
-                <th style={{ flex: 1 }}>Name</th>
-                <th style={{ flex: 1 }}>Price</th>
-                <th style={{ flex: 1 }}>Core Count</th>
-                <th style={{ flex: 1 }}>Core Clock</th>
-                <th style={{ flex: 1 }}>Boost Clock</th>
-                <th style={{ flex: 1 }}>Microarchitecture</th>
-                <th style={{ flex: 1 }}>TDP</th>
-                <th style={{ flex: 1 }}>Graphics</th>
+              <tr style={{ display: 'flex', textAlign: 'left' }}>
+                <th style={{ flex: '1 1 15%', padding: '10px' }}>Name</th>
+                <th style={{ flex: '1 1 15%', padding: '10px' }}>Price</th>
+                <th style={{ flex: '1 1 10%', padding: '10px' }}>Core Count</th>
+                <th style={{ flex: '1 1 10%', padding: '10px' }}>Core Clock</th>
+                <th style={{ flex: '1 1 10%', padding: '10px' }}>Boost Clock</th>
+                <th style={{ flex: '1 1 15%', padding: '10px' }}>Microarchitecture</th>
+                <th style={{ flex: '1 1 10%', padding: '10px' }}>TDP</th>
+                <th style={{ flex: '1 1 10%', padding: '10px' }}>Graphics</th>
               </tr>
             </thead>
             <tbody>
@@ -126,14 +126,14 @@ export default function CPUTable() {
                           e.currentTarget.style.background = 'none'; // Revert background on mouse leave
                         }}
                       >
-                        <span style={{ flex: 1 }}>{row.name}</span>
-                        <span style={{ flex: 1 }}>{row.price}</span>
-                        <span style={{ flex: 1 }}>{row.core_count}</span>
-                        <span style={{ flex: 1 }}>{row.core_clock}</span>
-                        <span style={{ flex: 1 }}>{row.boost_clock}</span>
-                        <span style={{ flex: 1 }}>{row.microarchitecture}</span>
-                        <span style={{ flex: 1 }}>{row.tdp}</span>
-                        <span style={{ flex: 1 }}>{row.graphics}</span>
+                        <span style={{ flex: '1 1 15%', padding: '10px' }}>{row.name}</span>
+                        <span style={{ flex: '1 1 15%', padding: '10px' }}>{row.price}</span>
+                        <span style={{ flex: '1 1 10%', padding: '10px' }}>{row.core_count}</span>
+                        <span style={{ flex: '1 1 10%', padding: '10px' }}>{row.core_clock}</span>
+                        <span style={{ flex: '1 1 10%', padding: '10px' }}>{row.boost_clock}</span>
+                        <span style={{ flex: '1 1 15%', padding: '10px' }}>{row.microarchitecture}</span>
+                        <span style={{ flex: '1 1 10%', padding: '10px' }}>{row.tdp}</span>
+                        <span style={{ flex: '1 1 10%', padding: '10px' }}>{row.graphics}</span>
                       </button>
                     </td>
                   </tr>
