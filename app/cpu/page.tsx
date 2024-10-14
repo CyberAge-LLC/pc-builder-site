@@ -175,6 +175,7 @@ export default function CPUTable() {
             nextClassName="mx-2 px-4 py-2 border rounded-md cursor-pointer bg-gray-700 text-white hover:bg-gray-600"
             pageClassName="mx-1"
             pageLinkClassName="px-4 py-2 border rounded-md cursor-pointer bg-gray-800 text-white hover:bg-gray-700"
+            forcePage={page} // Ensure the pagination component reflects the current page state
           />
         </div>
       </div>
