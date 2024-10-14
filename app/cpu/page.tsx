@@ -28,55 +28,38 @@ export default function CPUTable() {
   }
 
   const [data, setData] = useState<TableRow[]>([]);
-  const [sortedData, setSortedData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const rowsPerPage = 100; // Define how many rows per page
   const [sortConfig, setSortConfig] = useState<{ key: keyof TableRow; direction: 'ascending' | 'descending' } | null>(null);
+  const rowsPerPage = 100; // Define how many rows per page
 
   useEffect(() => {
     fetchData();
-  }, []); // Fetch data only once on mount
-
-  useEffect(() => {
-    // Sort data whenever sortConfig changes
-    const sorted = sortData(data);
-    setSortedData(sorted);
-    setTotalPages(Math.ceil(sorted.length / rowsPerPage));
-  }, [data, sortConfig]); // Re-sort when data or sort config changes
+  }, [page]);
 
   const fetchData = async () => {
-    const { data: rows, error } = await supabase.from('cpu').select('*');
+    const { count, error: countError } = await supabase
+      .from('cpu')
+      .select('*', { count: 'exact', head: true });
+
+    if (countError || count === null) {
+      console.error('Error fetching row count:', countError);
+      return;
+    }
+
+    const totalPages = Math.ceil(count / rowsPerPage);
+    setTotalPages(totalPages);
+
+    const { data: rows, error } = await supabase
+      .from('cpu')
+      .select('*')
+      .range(page * rowsPerPage, (page + 1) * rowsPerPage - 1);
+
     if (error) {
       console.error('Error fetching data:', error);
     } else {
-      setData(rows || []); // Set empty array if rows is null
+      setData(rows || []);
     }
-  };
-
-  const sortData = (rows: TableRow[]) => {
-    if (!sortConfig) return rows;
-
-    const { key, direction } = sortConfig;
-    return [...rows].sort((a, b) => {
-      if (key === 'price' || key === 'core_count' || key === 'core_clock' || key === 'boost_clock' || key === 'tdp') {
-        return direction === 'ascending'
-          ? parseFloat(a[key] as string) - parseFloat(b[key] as string)
-          : parseFloat(b[key] as string) - parseFloat(a[key] as string);
-      } else {
-        return direction === 'ascending'
-          ? (a[key] as string).localeCompare(b[key] as string)
-          : (b[key] as string).localeCompare(a[key] as string);
-      }
-    });
-  };
-
-  const handleSort = (key: keyof TableRow) => {
-    let direction: 'ascending' | 'descending' = 'ascending';
-    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
-    }
-    setSortConfig({ key, direction });
   };
 
   const handlePageClick = (event: PageClickEvent) => {
@@ -87,9 +70,32 @@ export default function CPUTable() {
     console.log('Row clicked:', row);
   };
 
-  const hasData = sortedData.length > 0;
+  const requestSort = (key: keyof TableRow) => {
+    let direction: 'ascending' | 'descending' = 'ascending';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
 
-  const paginatedData = sortedData.slice(page * rowsPerPage, (page + 1) * rowsPerPage); // Paginate sorted data
+  const sortedData = () => {
+    if (sortConfig !== null) {
+      const { key, direction } = sortConfig;
+      return [...data].sort((a, b) => {
+        if (typeof a[key] === 'string' && typeof b[key] === 'string') {
+          return direction === 'ascending' ? a[key].localeCompare(b[key]) : b[key].localeCompare(a[key]);
+        }
+        return direction === 'ascending' ? (a[key] as number) - (b[key] as number) : (b[key] as number) - (a[key] as number);
+      });
+    }
+    return data;
+  };
+
+  const formattedPrice = (price: string) => {
+    return parseFloat(price).toFixed(2);
+  };
+
+  const hasData = Array.isArray(data) && data.length > 0;
 
   return (
     <section className="bg-black">
@@ -106,19 +112,59 @@ export default function CPUTable() {
           <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ display: 'flex', textAlign: 'left', backgroundColor: '#2a2a2a' }}>
-                <th onClick={() => handleSort('name')} style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Name</th>
-                <th onClick={() => handleSort('price')} style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Price</th>
-                <th onClick={() => handleSort('core_count')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Core Count</th>
-                <th onClick={() => handleSort('core_clock')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Core Clock</th>
-                <th onClick={() => handleSort('boost_clock')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Boost Clock</th>
-                <th onClick={() => handleSort('microarchitecture')} style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Microarchitecture</th>
-                <th onClick={() => handleSort('tdp')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>TDP</th>
-                <th onClick={() => handleSort('graphics')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Graphics</th>
+                <th
+                  onClick={() => requestSort('name')}
+                  style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
+                >
+                  Name
+                </th>
+                <th
+                  onClick={() => requestSort('price')}
+                  style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
+                >
+                  Price
+                </th>
+                <th
+                  onClick={() => requestSort('core_count')}
+                  style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
+                >
+                  Core Count
+                </th>
+                <th
+                  onClick={() => requestSort('core_clock')}
+                  style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
+                >
+                  Core Clock
+                </th>
+                <th
+                  onClick={() => requestSort('boost_clock')}
+                  style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
+                >
+                  Boost Clock
+                </th>
+                <th
+                  onClick={() => requestSort('microarchitecture')}
+                  style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
+                >
+                  Microarchitecture
+                </th>
+                <th
+                  onClick={() => requestSort('tdp')}
+                  style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
+                >
+                  TDP
+                </th>
+                <th
+                  onClick={() => requestSort('graphics')}
+                  style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
+                >
+                  Graphics
+                </th>
               </tr>
             </thead>
             <tbody>
               {hasData ? (
-                paginatedData.map((row) => (
+                sortedData().map((row) => (
                   <tr key={row.id}>
                     <td colSpan={8}>
                       <button
@@ -133,7 +179,7 @@ export default function CPUTable() {
                           transition: 'background 0.3s',
                           display: 'flex',
                           justifyContent: 'space-between',
-                          alignItems: 'center', // Center content vertically
+                          alignItems: 'center',
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.background = '#2a2a2a'; // Change background on hover
@@ -143,7 +189,9 @@ export default function CPUTable() {
                         }}
                       >
                         <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.name}</span>
-                        <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.price}</span>
+                        <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>
+                          {formattedPrice(row.price)} {/* Format price here */}
+                        </span>
                         <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_count}</span>
                         <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_clock}</span>
                         <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.boost_clock}</span>
@@ -170,19 +218,17 @@ export default function CPUTable() {
               previousLabel={'Previous'}
               nextLabel={'Next'}
               breakLabel={'...'}
-              breakClassName={'break-me'}
               pageCount={totalPages}
               marginPagesDisplayed={2}
-              pageRangeDisplayed={5}
+              pageRangeDisplayed={3}
               onPageChange={handlePageClick}
               containerClassName={'pagination'}
-              pageClassName={'page-item'}
-              pageLinkClassName={'page-link'}
-              previousClassName={'page-item'}
-              previousLinkClassName={'page-link'}
-              nextClassName={'page-item'}
-              nextLinkClassName={'page-link'}
-              activeClassName={'active'}
+              pageClassName={'pagination-page'}
+              pageLinkClassName={'pagination-link'}
+              previousClassName={'pagination-previous'}
+              nextClassName={'pagination-next'}
+              activeClassName={'pagination-active'}
+              disabledClassName={'pagination-disabled'}
             />
           </div>
         </div>
