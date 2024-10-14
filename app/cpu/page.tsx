@@ -30,7 +30,7 @@ export default function CPUTable() {
   const [data, setData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const rowsPerPage = 20; // Define how many rows per page
+  const rowsPerPage = 100; // Define how many rows per page
   const [sortConfig, setSortConfig] = useState<{ key: keyof TableRow; direction: 'ascending' | 'descending' } | null>(null);
   const [loading, setLoading] = useState(true); // Loading state
 
