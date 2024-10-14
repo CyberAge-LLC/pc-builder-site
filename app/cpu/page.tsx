@@ -31,7 +31,7 @@ export default function CPUTable() {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [sortConfig, setSortConfig] = useState<{ key: keyof TableRow; direction: 'ascending' | 'descending' } | null>(null);
-  const rowsPerPage = 100; // Define how many rows per page
+  const rowsPerPage = 10; // Define how many rows per page
 
   useEffect(() => {
     fetchData();
@@ -92,7 +92,7 @@ export default function CPUTable() {
 
     if (sortConfig !== null) {
       const { key, direction } = sortConfig;
-      return [...filteredData].sort((a, b) => {
+      const sorted = [...filteredData].sort((a, b) => {
         let aValue: number | string = a[key];
         let bValue: number | string = b[key];
 
@@ -115,6 +115,7 @@ export default function CPUTable() {
           return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
         }
       });
+      return sorted; // Return sorted data if sorting is applied
     }
     return filteredData; // Return filtered data if no sorting is applied
   };
@@ -125,6 +126,14 @@ export default function CPUTable() {
   };
 
   const hasData = Array.isArray(data) && data.length > 0;
+
+  // Get current rows for pagination
+  const currentRows = () => {
+    const sortedAndFilteredData = sortedData();
+    const startIndex = page * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return sortedAndFilteredData.slice(startIndex, endIndex);
+  };
 
   return (
     <section className="bg-black">
@@ -193,7 +202,7 @@ export default function CPUTable() {
             </thead>
             <tbody>
               {hasData ? (
-                sortedData().map((row) => (
+                currentRows().map((row) => (
                   <tr key={row.id}>
                     <td colSpan={8}>
                       <button
@@ -214,7 +223,7 @@ export default function CPUTable() {
                           e.currentTarget.style.background = '#2a2a2a'; // Change background on hover
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'none'; // Revert background on mouse leave
+                          e.currentTarget.style.background = 'none'; // Revert background on leave
                         }}
                       >
                         <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.name}</span>
