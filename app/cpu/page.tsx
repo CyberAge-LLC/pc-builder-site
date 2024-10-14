@@ -88,17 +88,14 @@ export default function CPUTable() {
       const { key, direction } = sortConfig;
 
       sortableData.sort((a, b) => {
-        let aValue = key === 'price' ? parseFloat(String(a[key])) : parseInt(String(a[key]));
-        let bValue = key === 'price' ? parseFloat(String(b[key])) : parseInt(String(b[key]));
+        let aValue = key === 'price' ? parseFloat(a[key]) : parseInt(a[key]);
+        let bValue = key === 'price' ? parseFloat(b[key]) : parseInt(b[key]);
 
         if (isNaN(aValue) || isNaN(bValue)) return 0;
 
         return direction === 'ascending' ? aValue - bValue : bValue - aValue;
       });
-  }
-
-  return sortableData;
-}, [data, sortConfig]);
+    }
 
     return sortableData;
   }, [data, sortConfig]);
