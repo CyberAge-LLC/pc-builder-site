@@ -76,14 +76,23 @@ export default function CPUTable() {
     if (sortConfig && sortConfig.key === key) {
       direction = sortConfig.direction === 'ascending' ? 'descending' : 'ascending';
     }
-    
+
     setSortConfig({ key, direction });
   };
 
   const sortedData = () => {
+    // Filter out rows with NaN values
+    const filteredData = data.filter(row => {
+      const price = parseFloat(row.price);
+      const coreCount = parseInt(row.core_count, 10);
+      const tdp = parseInt(row.tdp, 10);
+
+      return !isNaN(price) && !isNaN(coreCount) && !isNaN(tdp);
+    });
+
     if (sortConfig !== null) {
       const { key, direction } = sortConfig;
-      return [...data].sort((a, b) => {
+      return [...filteredData].sort((a, b) => {
         let aValue: number | string = a[key];
         let bValue: number | string = b[key];
 
@@ -99,11 +108,6 @@ export default function CPUTable() {
           bValue = bValue as string;
         }
 
-        // Handle NaN cases
-        if (isNaN(aValue as number) && isNaN(bValue as number)) return 0;
-        if (isNaN(aValue as number)) return direction === 'ascending' ? 1 : -1;
-        if (isNaN(bValue as number)) return direction === 'ascending' ? -1 : 1;
-
         // Sort based on direction
         if (direction === 'ascending') {
           return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
@@ -112,7 +116,7 @@ export default function CPUTable() {
         }
       });
     }
-    return data;
+    return filteredData; // Return filtered data if no sorting is applied
   };
 
   const formattedPrice = (price: string) => {
