@@ -287,11 +287,26 @@ export default function CPUTable() {
           padding: 0;
           margin: 0;
         }
-        .pagination-item {
+        .pagination-page {
           margin: 0 5px; /* Space between items */
+          padding: 10px 15px;
+          border: 1px solid #666;
+          border-radius: 5px;
+          background-color: #333;
+          color: white;
+          cursor: pointer;
+          transition: background-color 0.3s;
         }
-        .active {
-          font-weight: bold; /* Style for active page */
+        .pagination-page:hover {
+          background-color: #444;
+        }
+        .pagination-active {
+          background-color: #444; /* Active page style */
+          font-weight: bold;
+        }
+        .pagination-disabled {
+          opacity: 0.5; /* Style for disabled items */
+          pointer-events: none; /* Disable interaction */
         }
       `}</style>
     </section>
