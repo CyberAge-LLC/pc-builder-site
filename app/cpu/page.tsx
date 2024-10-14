@@ -88,15 +88,15 @@ export default function CPUTable() {
         <div>
           <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Core Count</th>
-                <th>Core Clock</th>
-                <th>Boost Clock</th>
-                <th>Microarchitecture</th>
-                <th>TDP</th>
-                <th>Graphics</th>
+              <tr style={{ display: 'flex', justifyContent: 'space-between', textAlign: 'left' }}>
+                <th style={{ flex: 1 }}>Name</th>
+                <th style={{ flex: 1 }}>Price</th>
+                <th style={{ flex: 1 }}>Core Count</th>
+                <th style={{ flex: 1 }}>Core Clock</th>
+                <th style={{ flex: 1 }}>Boost Clock</th>
+                <th style={{ flex: 1 }}>Microarchitecture</th>
+                <th style={{ flex: 1 }}>TDP</th>
+                <th style={{ flex: 1 }}>Graphics</th>
               </tr>
             </thead>
             <tbody>
