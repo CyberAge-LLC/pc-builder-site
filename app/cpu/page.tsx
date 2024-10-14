@@ -64,6 +64,9 @@ export default function CPUTable() {
   };
 
   const handleSort = (key: keyof TableRow) => {
+    // Prevent sorting on boost_clock
+    if (key === 'boost_clock') return;
+
     let direction: 'ascending' | 'descending' = 'ascending';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
       direction = 'descending';
@@ -82,7 +85,7 @@ export default function CPUTable() {
       if (key === 'price') {
         aValue = parseFloat(a[key] as string);
         bValue = parseFloat(b[key] as string);
-      } else if (key === 'core_clock' || key === 'boost_clock') {
+      } else if (key === 'core_clock') {
         aValue = parseFloat(a[key] as string);
         bValue = parseFloat(b[key] as string);
       } else {
@@ -126,7 +129,7 @@ export default function CPUTable() {
                   <th
                     key={key}
                     onClick={() => handleSort(key as keyof TableRow)}
-                    style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
+                    style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: key === 'boost_clock' ? 'not-allowed' : 'pointer' }}
                   >
                     {key.charAt(0).toUpperCase() + key.slice(1)}
                   </th>
@@ -165,8 +168,8 @@ export default function CPUTable() {
                         <div style={{ flex: '1 1 10%' }}>{row.name}</div>
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price).toFixed(2)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.core_count}</div>
-                        <div style={{ flex: '1 1 10%' }}>{parseFloat(row.core_clock).toFixed(1)}</div> {/* One decimal point */}
-                        <div style={{ flex: '1 1 10%' }}>{parseFloat(row.boost_clock).toFixed(1)}</div> {/* One decimal point */}
+                        <div style={{ flex: '1 1 10%' }}>{parseFloat(row.core_clock).toFixed(1)}</div>
+                        <div style={{ flex: '1 1 10%' }}>{isNaN(parseFloat(row.boost_clock)) ? 'N/A' : parseFloat(row.boost_clock).toFixed(1)}</div> {/* Display "N/A" if NaN */}
                         <div style={{ flex: '1 1 10%' }}>{row.microarchitecture}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.tdp}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.graphics}</div>
