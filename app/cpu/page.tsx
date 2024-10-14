@@ -1,36 +1,34 @@
 'use client';
 
 import LogoCloud from '@/components/ui/LogoCloud';
-import cn from 'classnames';
 import { createClient } from '@supabase/supabase-js';
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 
-const supabaseUrl = "https://ogsbootxscuhnzosbkuy.supabase.co";
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3Nia3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0";
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-type TableRow = {
-  col1: string;
-  col2: string;
-  col3: string;
-  col4: string;
-  col5: string;
-  col6: string;
-  col7: string;
-  col8: string;
-};
-
-interface PageClickEvent {
-  selected: number;
-}
-
 export default function CPUTable() {
+  const supabaseUrl = "https://ogsbootxscuhnzosbkuy.supabase.co";
+  const supabaseAnonKey = "YOUR_ANON_KEY"; // Replace with your actual anon key
+
+  const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+  type TableRow = {
+    col1: string;
+    col2: string;
+    col3: string;
+    col4: string;
+    col5: string;
+    col6: string;
+    col7: string;
+    col8: string;
+  };
+
+  interface PageClickEvent {
+    selected: number;
+  }
+
   const [data, setData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-
   const rowsPerPage = 10; // Define how many rows per page
 
   useEffect(() => {
@@ -40,7 +38,7 @@ export default function CPUTable() {
   const fetchData = async () => {
     // Fetch total row count to calculate total pages
     const { count, error: countError } = await supabase
-      .from('cpu')
+      .from('cpu') // Ensure this table name is correct
       .select('*', { count: 'exact', head: true });
 
     if (countError || count === null) {
@@ -53,14 +51,14 @@ export default function CPUTable() {
 
     // Fetch paginated data
     const { data: rows, error } = await supabase
-      .from('my_table')
+      .from('cpu') // Ensure this table name is correct
       .select('*')
-      .range(page * rowsPerPage, (page + 1) * rowsPerPage - 1);
+      .range(page * rowsPerPage, (page + 1) * rowsPerPage - 1); // Correct range for pagination
 
     if (error) {
       console.error('Error fetching data:', error);
     } else {
-      setData(rows);
+      setData(rows || []); // Set empty array if rows is null
     }
   };
 
@@ -71,7 +69,7 @@ export default function CPUTable() {
   const hasData = Array.isArray(data) && data.length > 0;
 
   return (
-     <div className="bg-black">
+    <section className="bg-black">
       <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
         <div className="sm:flex sm:flex-col sm:align-center">
           <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
@@ -79,11 +77,10 @@ export default function CPUTable() {
           </p>
         </div>
 
-        {/* Ensure LogoCloud component exists and is imported */}
-        <LogoCloud /> 
+        <LogoCloud />
 
         <div>
-          <table border=1 width="100%"> {/* border attribute fixed */}
+          <table border="1" width="100%">
             <thead>
               <tr>
                 <th>Column 1</th>
@@ -97,18 +94,26 @@ export default function CPUTable() {
               </tr>
             </thead>
             <tbody>
-              {data.map((row, index) => (
-                <tr key={index}>
-                  <td>{row.col1}</td>
-                  <td>{row.col2}</td>
-                  <td>{row.col3}</td>
-                  <td>{row.col4}</td>
-                  <td>{row.col5}</td>
-                  <td>{row.col6}</td>
-                  <td>{row.col7}</td>
-                  <td>{row.col8}</td>
+              {hasData ? (
+                data.map((row, index) => (
+                  <tr key={index}>
+                    <td>{row.col1}</td>
+                    <td>{row.col2}</td>
+                    <td>{row.col3}</td>
+                    <td>{row.col4}</td>
+                    <td>{row.col5}</td>
+                    <td>{row.col6}</td>
+                    <td>{row.col7}</td>
+                    <td>{row.col8}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={8} className="text-center">
+                    No data available
+                  </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
 
@@ -126,6 +131,6 @@ export default function CPUTable() {
           />
         </div>
       </div>
-    </div>
+    </section>
   );
 }
