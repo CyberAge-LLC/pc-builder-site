@@ -57,3 +57,31 @@ p a {
 .height-screen-helper {
   min-height: calc(100vh - 80px);
 }
+
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* Space above pagination */
+}
+
+.pagination {
+  display: flex; /* Use flexbox for horizontal alignment */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pagination-item {
+  margin: 0 5px; /* Space between items */
+  padding: 5px 10px; /* Padding around the page numbers */
+  border: 1px solid #ccc; /* Optional border */
+  border-radius: 5px; /* Optional rounded corners */
+  cursor: pointer; /* Change cursor to pointer */
+}
+
+.active {
+  font-weight: bold; /* Style for active page */
+  background-color: #2a2a2a; /* Highlight active page */
+  color: white; /* Text color for active page */
+}
