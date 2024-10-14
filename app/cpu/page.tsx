@@ -38,18 +38,6 @@ export default function CPUTable() {
   }, []);
 
   const fetchData = async () => {
-    const { count, error: countError } = await supabase
-      .from('cpu')
-      .select('*', { count: 'exact', head: true });
-
-    if (countError || count === null) {
-      console.error('Error fetching row count:', countError);
-      return;
-    }
-
-    const totalPages = Math.ceil(count / rowsPerPage);
-    setTotalPages(totalPages);
-
     const { data: rows, error } = await supabase
       .from('cpu')
       .select('*');
@@ -58,15 +46,12 @@ export default function CPUTable() {
       console.error('Error fetching data:', error);
     } else {
       setData(rows || []);
+      setTotalPages(Math.ceil((rows || []).length / rowsPerPage)); // Calculate total pages based on the full dataset
     }
   };
 
   const handlePageClick = (event: PageClickEvent) => {
     setPage(event.selected);
-  };
-
-  const handleRowClick = (row: TableRow) => {
-    console.log('Row clicked:', row);
   };
 
   const requestSort = (key: keyof TableRow) => {
@@ -117,8 +102,11 @@ export default function CPUTable() {
           return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
         }
       });
+      setTotalPages(Math.ceil(sorted.length / rowsPerPage)); // Update total pages after sorting and filtering
       return sorted; // Return sorted data if sorting is applied
     }
+    
+    setTotalPages(Math.ceil(filteredData.length / rowsPerPage)); // Update total pages based on filtered data
     return filteredData; // Return filtered data if no sorting is applied
   };
 
@@ -133,7 +121,7 @@ export default function CPUTable() {
   const currentRows = () => {
     const sortedAndFilteredData = sortedData();
     const startIndex = page * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
+    const endIndex = Math.min(startIndex + rowsPerPage, sortedAndFilteredData.length); // Prevent empty pages
     return sortedAndFilteredData.slice(startIndex, endIndex);
   };
 
@@ -213,13 +201,10 @@ export default function CPUTable() {
                           width: '100%',
                           background: 'none',
                           border: 'none',
-                          padding: '10px',
-                          cursor: 'pointer',
-                          outline: 'none',
-                          transition: 'background 0.3s',
+                          padding: '0',
+                          color: 'white',
                           display: 'flex',
                           justifyContent: 'space-between',
-                          alignItems: 'center',
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.background = '#444'; // Highlight background on hover
