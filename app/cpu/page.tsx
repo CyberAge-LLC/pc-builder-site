@@ -79,7 +79,7 @@ export default function CPUTable() {
         <LogoCloud />
       </div>
       <div>
-        <table border="1" width="100%">
+        <table border=1 width="100%">
           <thead>
             <tr>
               <th>Column 1</th>
