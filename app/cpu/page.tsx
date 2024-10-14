@@ -31,10 +31,11 @@ export default function CPUTable() {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const rowsPerPage = 100; // Define how many rows per page
+  const [sortConfig, setSortConfig] = useState<{ key: keyof TableRow; direction: 'ascending' | 'descending' } | null>(null);
 
   useEffect(() => {
     fetchData();
-  }, [page]);
+  }, [page, sortConfig]); // Fetch data when page or sort changes
 
   const fetchData = async () => {
     // Fetch total row count to calculate total pages
@@ -59,8 +60,34 @@ export default function CPUTable() {
     if (error) {
       console.error('Error fetching data:', error);
     } else {
-      setData(rows || []); // Set empty array if rows is null
+      const sortedData = sortData(rows || []); // Sort data if it exists
+      setData(sortedData); // Set empty array if rows is null
     }
+  };
+
+  const sortData = (rows: TableRow[]) => {
+    if (!sortConfig) return rows;
+
+    const { key, direction } = sortConfig;
+    return [...rows].sort((a, b) => {
+      if (key === 'price' || key === 'core_count' || key === 'core_clock' || key === 'boost_clock' || key === 'tdp') {
+        return direction === 'ascending'
+          ? parseFloat(a[key]) - parseFloat(b[key])
+          : parseFloat(b[key]) - parseFloat(a[key]);
+      } else {
+        return direction === 'ascending'
+          ? a[key].localeCompare(b[key])
+          : b[key].localeCompare(a[key]);
+      }
+    });
+  };
+
+  const handleSort = (key: keyof TableRow) => {
+    let direction: 'ascending' | 'descending' = 'ascending';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
   };
 
   const handlePageClick = (event: PageClickEvent) => {
@@ -89,14 +116,14 @@ export default function CPUTable() {
           <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ display: 'flex', textAlign: 'left', backgroundColor: '#2a2a2a' }}>
-                <th style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white' }}>Name</th>
-                <th style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white' }}>Price</th>
-                <th style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white' }}>Core Count</th>
-                <th style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white' }}>Core Clock</th>
-                <th style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white' }}>Boost Clock</th>
-                <th style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white' }}>Microarchitecture</th>
-                <th style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white' }}>TDP</th>
-                <th style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white' }}>Graphics</th>
+                <th onClick={() => handleSort('name')} style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Name</th>
+                <th onClick={() => handleSort('price')} style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Price</th>
+                <th onClick={() => handleSort('core_count')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Core Count</th>
+                <th onClick={() => handleSort('core_clock')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Core Clock</th>
+                <th onClick={() => handleSort('boost_clock')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Boost Clock</th>
+                <th onClick={() => handleSort('microarchitecture')} style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Microarchitecture</th>
+                <th onClick={() => handleSort('tdp')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>TDP</th>
+                <th onClick={() => handleSort('graphics')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Graphics</th>
               </tr>
             </thead>
             <tbody>
