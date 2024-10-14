@@ -34,6 +34,7 @@ export default function CPUTable() {
     fetchData();
   }, []);
 
+  // Fetch data and set total pages based on the row count
   const fetchData = async () => {
     setLoading(true);
     
@@ -47,15 +48,17 @@ export default function CPUTable() {
       return;
     }
 
+    // Filter out rows where price is NaN or 0.00
     const filteredRows = rows?.filter(row => 
       !isNaN(parseFloat(row.price)) && 
+      parseFloat(row.price) !== 0 && 
       !isNaN(parseInt(row.core_count)) && 
       !isNaN(parseInt(row.tdp))
     ) || [];
 
-    const totalRowCount = count ?? 0;
+    const totalRowCount = filteredRows.length;
     setData(filteredRows);
-    setTotalPages(Math.ceil(totalRowCount / rowsPerPage));
+    setTotalPages(Math.ceil(totalRowCount / rowsPerPage)); // Calculate total pages based on filtered data
     setLoading(false);
   };
 
@@ -70,8 +73,8 @@ export default function CPUTable() {
     }
 
     setSortConfig({ key, direction });
-    setPage(0);
-    sortData(key, direction);
+    setPage(0); // Reset to first page when sorting
+    sortData(key, direction); // Sort data based on selected key and direction
   };
 
   const sortData = (key: keyof TableRow, direction: 'ascending' | 'descending') => {
@@ -101,9 +104,10 @@ export default function CPUTable() {
     });
 
     setData(sorted);
-    setTotalPages(Math.ceil(sorted.length / rowsPerPage));
+    setTotalPages(Math.ceil(sorted.length / rowsPerPage)); // Recalculate total pages based on sorted data length
   };
 
+  // Memoize paginated data to avoid recalculating on every render
   const paginatedData = React.useMemo(() => {
     const start = page * rowsPerPage;
     return data.slice(start, start + rowsPerPage);
