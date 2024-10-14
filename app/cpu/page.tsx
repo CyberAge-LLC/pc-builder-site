@@ -70,16 +70,12 @@ export default function CPUTable() {
     setLoading(false);
   };
 
-const handlePageClick = (event: { selected: number }) => {
-  const selectedPage = event.selected;
-  setPage(selectedPage);
-  fetchData(); // Fetch data for the new page
-};
-
-
   const handlePageClick = (event: { selected: number }) => {
-    setPage(event.selected);
+    const selectedPage = event.selected;
+    setPage(selectedPage);
+    fetchData(); // Fetch data for the new page
   };
+
 
   const handleSort = (key: keyof TableRow) => {
     let direction: 'ascending' | 'descending' = 'ascending';
