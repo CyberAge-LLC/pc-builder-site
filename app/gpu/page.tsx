@@ -39,7 +39,7 @@ export default function GPUTable() {
     setLoading(true);
 
     const { data: rows, count, error } = await supabase
-      .from('video-card') // Update with the correct table name in Supabase
+      .from('gputable') // Update with the correct table name in Supabase
       .select('*', { count: 'exact' });
 
     if (error) {
@@ -77,23 +77,18 @@ export default function GPUTable() {
 
   const sortData = (key: keyof TableRow, direction: 'ascending' | 'descending') => {
     const sorted = [...data].sort((a, b) => {
-      let aValue: number | null;
-      let bValue: number | null;
+      let aValue: string | number;
+      let bValue: string | number;
 
-      if (key === 'price') {
-        aValue = parseFloat(a[key] as string);
-        bValue = parseFloat(b[key] as string);
-      } else if (key === 'core_clock' || key === 'boost_clock' || key === 'length') {
-        aValue = parseFloat(a[key] as string);
-        bValue = parseFloat(b[key] as string);
+      // If the key is numeric (price, core_clock, boost_clock, length), sort numerically
+      if (key === 'price' || key === 'core_clock' || key === 'boost_clock' || key === 'length') {
+        aValue = parseFloat(a[key]);
+        bValue = parseFloat(b[key]);
       } else {
+        // Sort strings using localeCompare for string fields
         aValue = a[key] as string;
         bValue = b[key] as string;
       }
-
-      // Place NaN (null) values at the end
-      if (aValue === null) return 1;
-      if (bValue === null) return -1;
 
       if (typeof aValue === 'number' && typeof bValue === 'number') {
         return direction === 'ascending' ? aValue - bValue : bValue - aValue;
