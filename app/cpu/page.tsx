@@ -28,6 +28,7 @@ export default function CPUTable() {
   }
 
   const [data, setData] = useState<TableRow[]>([]);
+  const [sortedData, setSortedData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const rowsPerPage = 100; // Define how many rows per page
@@ -35,33 +36,21 @@ export default function CPUTable() {
 
   useEffect(() => {
     fetchData();
-  }, [page, sortConfig]); // Fetch data when page or sort changes
+  }, []); // Fetch data only once on mount
+
+  useEffect(() => {
+    // Sort data whenever sortConfig changes
+    const sorted = sortData(data);
+    setSortedData(sorted);
+    setTotalPages(Math.ceil(sorted.length / rowsPerPage));
+  }, [data, sortConfig]); // Re-sort when data or sort config changes
 
   const fetchData = async () => {
-    // Fetch total row count to calculate total pages
-    const { count, error: countError } = await supabase
-      .from('cpu')
-      .select('*', { count: 'exact', head: true });
-
-    if (countError || count === null) {
-      console.error('Error fetching row count:', countError);
-      return;
-    }
-
-    const totalPages = Math.ceil(count / rowsPerPage);
-    setTotalPages(totalPages);
-
-    // Fetch paginated data
-    const { data: rows, error } = await supabase
-      .from('cpu') // Ensure this table name is correct
-      .select('*')
-      .range(page * rowsPerPage, (page + 1) * rowsPerPage - 1); // Correct range for pagination
-
+    const { data: rows, error } = await supabase.from('cpu').select('*');
     if (error) {
       console.error('Error fetching data:', error);
     } else {
-      const sortedData = sortData(rows || []); // Sort data if it exists
-      setData(sortedData); // Set empty array if rows is null
+      setData(rows || []); // Set empty array if rows is null
     }
   };
 
@@ -70,13 +59,11 @@ export default function CPUTable() {
 
     const { key, direction } = sortConfig;
     return [...rows].sort((a, b) => {
-      // Check if the key corresponds to a numeric value
       if (key === 'price' || key === 'core_count' || key === 'core_clock' || key === 'boost_clock' || key === 'tdp') {
         return direction === 'ascending'
           ? parseFloat(a[key] as string) - parseFloat(b[key] as string)
           : parseFloat(b[key] as string) - parseFloat(a[key] as string);
       } else {
-        // Here we know it should be a string
         return direction === 'ascending'
           ? (a[key] as string).localeCompare(b[key] as string)
           : (b[key] as string).localeCompare(a[key] as string);
@@ -97,11 +84,12 @@ export default function CPUTable() {
   };
 
   const handleRowClick = (row: TableRow) => {
-    // Handle the row click, you can navigate to another page or perform an action
     console.log('Row clicked:', row);
   };
 
-  const hasData = Array.isArray(data) && data.length > 0;
+  const hasData = sortedData.length > 0;
+
+  const paginatedData = sortedData.slice(page * rowsPerPage, (page + 1) * rowsPerPage); // Paginate sorted data
 
   return (
     <section className="bg-black">
@@ -130,7 +118,7 @@ export default function CPUTable() {
             </thead>
             <tbody>
               {hasData ? (
-                data.map((row) => (
+                paginatedData.map((row) => (
                   <tr key={row.id}>
                     <td colSpan={8}>
                       <button
@@ -182,41 +170,23 @@ export default function CPUTable() {
               previousLabel={'Previous'}
               nextLabel={'Next'}
               breakLabel={'...'}
+              breakClassName={'break-me'}
               pageCount={totalPages}
               marginPagesDisplayed={2}
-              pageRangeDisplayed={3}
+              pageRangeDisplayed={5}
               onPageChange={handlePageClick}
               containerClassName={'pagination'}
+              pageClassName={'page-item'}
+              pageLinkClassName={'page-link'}
+              previousClassName={'page-item'}
+              previousLinkClassName={'page-link'}
+              nextClassName={'page-item'}
+              nextLinkClassName={'page-link'}
               activeClassName={'active'}
-              pageClassName={'pagination-item'}
-              previousClassName={'pagination-item'}
-              nextClassName={'pagination-item'}
-              breakClassName={'pagination-item'}
             />
           </div>
         </div>
       </div>
-
-      {/* Styles for Pagination */}
-      <style jsx>{`
-        .pagination-container {
-          display: flex;
-          justify-content: center;
-          margin-top: 20px; /* Space above pagination */
-        }
-        .pagination {
-          display: flex;
-          list-style: none;
-          padding: 0;
-          margin: 0;
-        }
-        .pagination-item {
-          margin: 0 5px; /* Space between items */
-        }
-        .active {
-          font-weight: bold; /* Style for active page */
-        }
-      `}</style>
     </section>
   );
 }
