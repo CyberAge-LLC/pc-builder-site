@@ -12,8 +12,7 @@ export default function CPUTable() {
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
   type TableRow = {
-    id: number;
-    created_at: string;
+    id: number; // Add id to match your table schema
     name: string;
     price: string;
     core_count: string;
@@ -82,7 +81,7 @@ export default function CPUTable() {
         <LogoCloud />
 
         <div>
-          <table border="1" width="100%" style={{ borderCollapse: 'collapse' }}>
+          <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
                 <th>Name</th>
