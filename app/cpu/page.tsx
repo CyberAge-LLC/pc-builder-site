@@ -35,7 +35,7 @@ export default function CPUTable() {
 
   useEffect(() => {
     fetchData();
-  }, [page]);
+  }, []);
 
   const fetchData = async () => {
     const { count, error: countError } = await supabase
@@ -52,8 +52,7 @@ export default function CPUTable() {
 
     const { data: rows, error } = await supabase
       .from('cpu')
-      .select('*')
-      .range(page * rowsPerPage, (page + 1) * rowsPerPage - 1);
+      .select('*');
 
     if (error) {
       console.error('Error fetching data:', error);
@@ -100,6 +99,11 @@ export default function CPUTable() {
           bValue = bValue as string;
         }
 
+        // Handle NaN cases
+        if (isNaN(aValue as number) && isNaN(bValue as number)) return 0;
+        if (isNaN(aValue as number)) return direction === 'ascending' ? 1 : -1;
+        if (isNaN(bValue as number)) return direction === 'ascending' ? -1 : 1;
+
         // Sort based on direction
         if (direction === 'ascending') {
           return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
@@ -112,7 +116,8 @@ export default function CPUTable() {
   };
 
   const formattedPrice = (price: string) => {
-    return parseFloat(price).toFixed(2); // Ensure two decimal places for prices
+    const parsedPrice = parseFloat(price);
+    return !isNaN(parsedPrice) ? parsedPrice.toFixed(2) : '0.00'; // Ensure two decimal places for prices
   };
 
   const hasData = Array.isArray(data) && data.length > 0;
@@ -210,7 +215,7 @@ export default function CPUTable() {
                       >
                         <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.name}</span>
                         <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>
-                          {formattedPrice(row.price)} {/* Format price here */}
+                          {formattedPrice(row.price)}
                         </span>
                         <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_count}</span>
                         <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_clock}</span>
