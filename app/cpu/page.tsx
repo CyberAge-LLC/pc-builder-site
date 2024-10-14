@@ -87,12 +87,20 @@ export default function CPUTable() {
 
   const handleSort = (key: string) => {
     let direction: 'ascending' | 'descending' = 'ascending';
+    
+    // Toggle the direction if the same key is clicked
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
       direction = 'descending';
     }
+
+    // Set the new sort configuration and reset to the first page (page 0)
     setSortConfig({ key, direction });
-    setPage(0); // Reset to first page when sorting
+    setPage(0);  // Reset to the first page when a sort button is clicked
   };
+
+  useEffect(() => {
+    fetchData();
+  }, [page, sortConfig]); // Ensure sorting resets and applies when sortConfig changes
 
   const hasData = Array.isArray(data) && data.length > 0;
 
