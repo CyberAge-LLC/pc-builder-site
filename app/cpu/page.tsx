@@ -37,7 +37,7 @@ export default function CPUTable() {
   // Fetch data and set total pages based on the row count
   const fetchData = async () => {
     setLoading(true);
-    
+
     const { data: rows, count, error } = await supabase
       .from('cpu')
       .select('*', { count: 'exact' });
@@ -67,6 +67,9 @@ export default function CPUTable() {
   };
 
   const handleSort = (key: keyof TableRow) => {
+    // Only allow sorting for numeric fields
+    if (key === 'name' || key === 'microarchitecture' || key === 'graphics') return;
+
     let direction: 'ascending' | 'descending' = 'ascending';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
       direction = 'descending';
@@ -82,22 +85,19 @@ export default function CPUTable() {
       let aValue: number | null;
       let bValue: number | null;
 
-      if (key === 'price') {
+      if (key === 'price' || key === 'core_clock' || key === 'boost_clock') {
         aValue = parseFloat(a[key] as string);
         bValue = parseFloat(b[key] as string);
-      } else if (key === 'core_clock') {
-        aValue = parseFloat(a[key] as string);
-        bValue = parseFloat(b[key] as string);
-      } else if (key === 'boost_clock') {
-        aValue = isNaN(parseFloat(a[key] as string)) ? null : parseFloat(a[key] as string);
-        bValue = isNaN(parseFloat(b[key] as string)) ? null : parseFloat(b[key] as string);
       } else {
         aValue = parseInt(a[key] as string);
         bValue = parseInt(b[key] as string);
       }
 
       // Place NaN (null) values at the end
-      if (aValue === null) return 1;
+      if (isNaN(aValue)) aValue = null;
+      if (isNaN(bValue)) bValue = null;
+
+      if (aValue === null) return 1; // Move NaN values to the bottom
       if (bValue === null) return -1;
 
       return direction === 'ascending' ? aValue - bValue : bValue - aValue;
@@ -135,7 +135,13 @@ export default function CPUTable() {
                   <th
                     key={key}
                     onClick={() => handleSort(key as keyof TableRow)}
-                    style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
+                    style={{
+                      flex: '1 1 10%',
+                      padding: '10px',
+                      textAlign: 'center',
+                      color: 'white',
+                      cursor: key === 'name' || key === 'microarchitecture' || key === 'graphics' ? 'default' : 'pointer',
+                    }}
                   >
                     {key.charAt(0).toUpperCase() + key.slice(1)}
                   </th>
