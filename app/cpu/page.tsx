@@ -27,7 +27,7 @@ interface PageClickEvent {
 }
 
 export default function CPUTable() {
-   const [data, setData] = useState<TableRow[]>([]);
+  const [data, setData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -77,49 +77,49 @@ export default function CPUTable() {
           </p>
         </div>
         <LogoCloud />
-      </div>
-      <div>
-        <table border=1 width="100%">
-          <thead>
-            <tr>
-              <th>Column 1</th>
-              <th>Column 2</th>
-              <th>Column 3</th>
-              <th>Column 4</th>
-              <th>Column 5</th>
-              <th>Column 6</th>
-              <th>Column 7</th>
-              <th>Column 8</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, index) => (
-              <tr key={index}>
-                <td>{row.col1}</td>
-                <td>{row.col2}</td>
-                <td>{row.col3}</td>
-                <td>{row.col4}</td>
-                <td>{row.col5}</td>
-                <td>{row.col6}</td>
-                <td>{row.col7}</td>
-                <td>{row.col8}</td>
+        <div>
+          <table border=1 width="100%">
+            <thead>
+              <tr>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+                <th>Column 4</th>
+                <th>Column 5</th>
+                <th>Column 6</th>
+                <th>Column 7</th>
+                <th>Column 8</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {data.map((row, index) => (
+                <tr key={index}>
+                  <td>{row.col1}</td>
+                  <td>{row.col2}</td>
+                  <td>{row.col3}</td>
+                  <td>{row.col4}</td>
+                  <td>{row.col5}</td>
+                  <td>{row.col6}</td>
+                  <td>{row.col7}</td>
+                  <td>{row.col8}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-        {/* Pagination Component */}
-        <ReactPaginate
-          previousLabel={'Previous'}
-          nextLabel={'Next'}
-          breakLabel={'...'}
-          pageCount={totalPages}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={3}
-          onPageChange={handlePageClick}
-          containerClassName={'pagination'}
-          activeClassName={'active'}
-        />
+          {/* Pagination Component */}
+          <ReactPaginate
+            previousLabel={'Previous'}
+            nextLabel={'Next'}
+            breakLabel={'...'}
+            pageCount={totalPages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={handlePageClick}
+            containerClassName={'pagination'}
+            activeClassName={'active'}
+          />
+        </div>
       </div>
     </section>
   );
