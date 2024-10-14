@@ -54,8 +54,10 @@ export default function CPUTable() {
       !isNaN(parseInt(row.tdp))
     ) || [];
 
+    // Use a fallback for count to prevent null error
+    const totalRowCount = count ?? 0; // Default to 0 if count is null
     setData(filteredRows);
-    setTotalPages(Math.ceil(count / rowsPerPage));
+    setTotalPages(Math.ceil(totalRowCount / rowsPerPage));
     setLoading(false);
   };
 
