@@ -14,12 +14,12 @@ export default function CPUTable() {
   type TableRow = {
     id: number; // Add id to match your table schema
     name: string;
-    price: string;
-    core_count: string;
-    core_clock: string;
-    boost_clock: string;
+    price: string; // Assume price is stored as a string
+    core_count: string; // Assume core_count is stored as a string but represents an integer
+    core_clock: string; // Assume core_clock is stored as a string but represents a float
+    boost_clock: string; // Assume boost_clock is stored as a string but represents a float
     microarchitecture: string;
-    tdp: string;
+    tdp: string; // Assume tdp is stored as a string but represents an integer
     graphics: string;
   };
 
@@ -82,10 +82,14 @@ export default function CPUTable() {
     if (sortConfig !== null) {
       const { key, direction } = sortConfig;
       return [...data].sort((a, b) => {
-        if (typeof a[key] === 'string' && typeof b[key] === 'string') {
-          return direction === 'ascending' ? a[key].localeCompare(b[key]) : b[key].localeCompare(a[key]);
+        const aValue = key === 'price' ? parseFloat(a[key]) : key === 'core_count' || key === 'tdp' ? parseInt(a[key]) : parseFloat(a[key]);
+        const bValue = key === 'price' ? parseFloat(b[key]) : key === 'core_count' || key === 'tdp' ? parseInt(b[key]) : parseFloat(b[key]);
+
+        if (direction === 'ascending') {
+          return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+        } else {
+          return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
         }
-        return direction === 'ascending' ? (a[key] as number) - (b[key] as number) : (b[key] as number) - (a[key] as number);
       });
     }
     return data;
@@ -233,6 +237,27 @@ export default function CPUTable() {
           </div>
         </div>
       </div>
+
+      {/* Styles for Pagination */}
+      <style jsx>{`
+        .pagination-container {
+          display: flex;
+          justify-content: center;
+          margin-top: 20px; /* Space above pagination */
+        }
+        .pagination {
+          display: flex;
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+        .pagination-item {
+          margin: 0 5px; /* Space between items */
+        }
+        .active {
+          font-weight: bold; /* Style for active page */
+        }
+      `}</style>
     </section>
   );
 }
