@@ -80,31 +80,31 @@ export default function CPUTable() {
         <LogoCloud />
 
         <div>
-          <table border="1" width="100%" style={{ borderCollapse: 'collapse' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
-                <th>Column 1</th>
-                <th>Column 2</th>
-                <th>Column 3</th>
-                <th>Column 4</th>
-                <th>Column 5</th>
-                <th>Column 6</th>
-                <th>Column 7</th>
-                <th>Column 8</th>
+                <th style={{ border: '1px solid #ccc' }}>Column 1</th>
+                <th style={{ border: '1px solid #ccc' }}>Column 2</th>
+                <th style={{ border: '1px solid #ccc' }}>Column 3</th>
+                <th style={{ border: '1px solid #ccc' }}>Column 4</th>
+                <th style={{ border: '1px solid #ccc' }}>Column 5</th>
+                <th style={{ border: '1px solid #ccc' }}>Column 6</th>
+                <th style={{ border: '1px solid #ccc' }}>Column 7</th>
+                <th style={{ border: '1px solid #ccc' }}>Column 8</th>
               </tr>
             </thead>
             <tbody>
               {hasData ? (
                 data.map((row, index) => (
                   <tr key={index}>
-                    <td>{row.col1}</td>
-                    <td>{row.col2}</td>
-                    <td>{row.col3}</td>
-                    <td>{row.col4}</td>
-                    <td>{row.col5}</td>
-                    <td>{row.col6}</td>
-                    <td>{row.col7}</td>
-                    <td>{row.col8}</td>
+                    <td style={{ border: '1px solid #ccc' }}>{row.col1}</td>
+                    <td style={{ border: '1px solid #ccc' }}>{row.col2}</td>
+                    <td style={{ border: '1px solid #ccc' }}>{row.col3}</td>
+                    <td style={{ border: '1px solid #ccc' }}>{row.col4}</td>
+                    <td style={{ border: '1px solid #ccc' }}>{row.col5}</td>
+                    <td style={{ border: '1px solid #ccc' }}>{row.col6}</td>
+                    <td style={{ border: '1px solid #ccc' }}>{row.col7}</td>
+                    <td style={{ border: '1px solid #ccc' }}>{row.col8}</td>
                   </tr>
                 ))
               ) : (
