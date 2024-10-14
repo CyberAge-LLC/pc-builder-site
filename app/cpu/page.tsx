@@ -104,8 +104,3 @@ export default function CPUTable() {
     </section>
   );
 }
-
-export default function CPU() {
-  return (
-  );
-}
