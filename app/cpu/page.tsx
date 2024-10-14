@@ -195,12 +195,10 @@ export default function CPUTable() {
                 currentRows().map((row) => (
                   <tr key={row.id}>
                     <td colSpan={8}>
-                      <button
-                        onClick={() => handleRowClick(row)}
+                      <div
                         style={{
                           width: '100%',
                           background: 'none',
-                          border: 'none',
                           padding: '0',
                           color: 'white',
                           display: 'flex',
@@ -223,7 +221,7 @@ export default function CPUTable() {
                         <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.microarchitecture}</span>
                         <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.tdp}</span>
                         <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.graphics}</span>
-                      </button>
+                      </div>
                     </td>
                   </tr>
                 ))
