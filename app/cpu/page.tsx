@@ -12,14 +12,14 @@ export default function CPUTable() {
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
   type TableRow = {
-    id: number; // Add id to match your table schema
+    id: number;
     name: string;
-    price: string; // Assume price is stored as a string
-    core_count: string; // Assume core_count is stored as a string but represents an integer
-    core_clock: string; // Assume core_clock is stored as a string but represents a float
-    boost_clock: string; // Assume boost_clock is stored as a string but represents a float
+    price: string;
+    core_count: string;
+    core_clock: string;
+    boost_clock: string;
     microarchitecture: string;
-    tdp: string; // Assume tdp is stored as a string but represents an integer
+    tdp: string;
     graphics: string;
   };
 
@@ -30,23 +30,54 @@ export default function CPUTable() {
   const [data, setData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [sortConfig, setSortConfig] = useState<{ key: keyof TableRow; direction: 'ascending' | 'descending' } | null>(null);
-  const rowsPerPage = 100; // Set to 100 rows per page
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'ascending' | 'descending' } | null>(null);
+  const rowsPerPage = 100; // Display 100 rows per page
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [page, sortConfig]);
 
   const fetchData = async () => {
-    const { data: rows, error } = await supabase
+    const { data: fetchedData, error } = await supabase
       .from('cpu')
       .select('*');
 
     if (error) {
       console.error('Error fetching data:', error);
     } else {
-      setData(rows || []);
-      setTotalPages(Math.ceil((rows || []).length / rowsPerPage)); // Calculate total pages based on the full dataset
+      const filteredData = (fetchedData || []).filter((row) => {
+        // Remove rows with NaN in critical columns
+        return (
+          !isNaN(parseFloat(row.price)) &&
+          !isNaN(parseFloat(row.core_count)) &&
+          !isNaN(parseFloat(row.core_clock)) &&
+          !isNaN(parseFloat(row.boost_clock)) &&
+          !isNaN(parseFloat(row.tdp))
+        );
+      });
+
+      if (sortConfig) {
+        const sortedData = [...filteredData].sort((a, b) => {
+          const aValue = sortConfig.key === 'price' || sortConfig.key === 'core_clock' || sortConfig.key === 'boost_clock' || sortConfig.key === 'tdp'
+            ? parseFloat(a[sortConfig.key])
+            : parseInt(a[sortConfig.key], 10);
+
+          const bValue = sortConfig.key === 'price' || sortConfig.key === 'core_clock' || sortConfig.key === 'boost_clock' || sortConfig.key === 'tdp'
+            ? parseFloat(b[sortConfig.key])
+            : parseInt(b[sortConfig.key], 10);
+
+          if (sortConfig.direction === 'ascending') {
+            return aValue - bValue;
+          } else {
+            return bValue - aValue;
+          }
+        });
+        setData(sortedData);
+      } else {
+        setData(filteredData);
+      }
+
+      setTotalPages(Math.ceil(filteredData.length / rowsPerPage));
     }
   };
 
@@ -54,76 +85,18 @@ export default function CPUTable() {
     setPage(event.selected);
   };
 
-  const requestSort = (key: keyof TableRow) => {
+  const handleSort = (key: string) => {
     let direction: 'ascending' | 'descending' = 'ascending';
-
-    // Determine the direction based on the current sort configuration
-    if (sortConfig && sortConfig.key === key) {
-      direction = sortConfig.direction === 'ascending' ? 'descending' : 'ascending';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
     }
-
-    // Update sort configuration and reset to first page
     setSortConfig({ key, direction });
-    setPage(0); // Reset to the first page on sort
-  };
-
-  const sortedData = () => {
-    // Filter out rows with NaN values
-    const filteredData = data.filter(row => {
-      const price = parseFloat(row.price);
-      const coreCount = parseInt(row.core_count, 10);
-      const tdp = parseInt(row.tdp, 10);
-
-      return !isNaN(price) && !isNaN(coreCount) && !isNaN(tdp);
-    });
-
-    if (sortConfig !== null) {
-      const { key, direction } = sortConfig;
-      const sorted = [...filteredData].sort((a, b) => {
-        let aValue: number | string = a[key];
-        let bValue: number | string = b[key];
-
-        // Parse values based on the type of the column
-        if (key === 'price') {
-          aValue = parseFloat(aValue as string);
-          bValue = parseFloat(bValue as string);
-        } else if (key === 'core_count' || key === 'tdp') {
-          aValue = parseInt(aValue as string, 10);
-          bValue = parseInt(bValue as string, 10);
-        } else {
-          aValue = aValue as string; // Keep as string for other fields
-          bValue = bValue as string;
-        }
-
-        // Sort based on direction
-        if (direction === 'ascending') {
-          return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-        } else {
-          return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-        }
-      });
-      setTotalPages(Math.ceil(sorted.length / rowsPerPage)); // Update total pages after sorting and filtering
-      return sorted; // Return sorted data if sorting is applied
-    }
-    
-    setTotalPages(Math.ceil(filteredData.length / rowsPerPage)); // Update total pages based on filtered data
-    return filteredData; // Return filtered data if no sorting is applied
-  };
-
-  const formattedPrice = (price: string) => {
-    const parsedPrice = parseFloat(price);
-    return !isNaN(parsedPrice) ? parsedPrice.toFixed(2) : '0.00'; // Ensure two decimal places for prices
+    setPage(0); // Reset to first page when sorting
   };
 
   const hasData = Array.isArray(data) && data.length > 0;
 
-  // Get current rows for pagination
-  const currentRows = () => {
-    const sortedAndFilteredData = sortedData();
-    const startIndex = page * rowsPerPage;
-    const endIndex = Math.min(startIndex + rowsPerPage, sortedAndFilteredData.length); // Prevent empty pages
-    return sortedAndFilteredData.slice(startIndex, endIndex);
-  };
+  const paginatedData = data.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
 
   return (
     <section className="bg-black">
@@ -140,88 +113,49 @@ export default function CPUTable() {
           <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ display: 'flex', textAlign: 'left', backgroundColor: '#2a2a2a' }}>
-                <th
-                  onClick={() => requestSort('name')}
-                  style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
-                >
-                  Name
-                </th>
-                <th
-                  onClick={() => requestSort('price')}
-                  style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
-                >
-                  Price
-                </th>
-                <th
-                  onClick={() => requestSort('core_count')}
-                  style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
-                >
-                  Core Count
-                </th>
-                <th
-                  onClick={() => requestSort('core_clock')}
-                  style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
-                >
-                  Core Clock
-                </th>
-                <th
-                  onClick={() => requestSort('boost_clock')}
-                  style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
-                >
-                  Boost Clock
-                </th>
-                <th
-                  onClick={() => requestSort('microarchitecture')}
-                  style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
-                >
-                  Microarchitecture
-                </th>
-                <th
-                  onClick={() => requestSort('tdp')}
-                  style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
-                >
-                  TDP
-                </th>
-                <th
-                  onClick={() => requestSort('graphics')}
-                  style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
-                >
-                  Graphics
-                </th>
+                {['name', 'price', 'core_count', 'core_clock', 'boost_clock', 'microarchitecture', 'tdp', 'graphics'].map((column) => (
+                  <th
+                    key={column}
+                    style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
+                    onClick={() => handleSort(column)}
+                  >
+                    {column.charAt(0).toUpperCase() + column.slice(1)}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {hasData ? (
-                currentRows().map((row) => (
+                paginatedData.map((row) => (
                   <tr key={row.id}>
                     <td colSpan={8}>
-                      <div
+                      <button
                         style={{
                           width: '100%',
                           background: 'none',
-                          padding: '0',
-                          color: 'white',
+                          border: 'none',
+                          padding: '10px',
+                          cursor: 'pointer',
                           display: 'flex',
                           justifyContent: 'space-between',
+                          alignItems: 'center',
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.background = '#444'; // Highlight background on hover
+                          e.currentTarget.style.background = '#2a2a2a';
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'none'; // Revert background on leave
+                          e.currentTarget.style.background = 'none';
                         }}
                       >
                         <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.name}</span>
-                        <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>
-                          {formattedPrice(row.price)}
-                        </span>
+                        <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{parseFloat(row.price).toFixed(2)}</span>
                         <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_count}</span>
                         <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_clock}</span>
                         <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.boost_clock}</span>
                         <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.microarchitecture}</span>
                         <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.tdp}</span>
                         <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.graphics}</span>
-                      </div>
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -246,12 +180,11 @@ export default function CPUTable() {
               pageRangeDisplayed={3}
               onPageChange={handlePageClick}
               containerClassName={'pagination'}
-              pageClassName={'pagination-page'}
-              pageLinkClassName={'pagination-link'}
-              previousClassName={'pagination-previous'}
-              nextClassName={'pagination-next'}
-              activeClassName={'pagination-active'}
-              disabledClassName={'pagination-disabled'}
+              activeClassName={'active'}
+              pageClassName={'pagination-item'}
+              previousClassName={'pagination-item'}
+              nextClassName={'pagination-item'}
+              breakClassName={'pagination-item'}
             />
           </div>
         </div>
@@ -268,28 +201,18 @@ export default function CPUTable() {
           display: flex;
           list-style: none;
           padding: 0;
-          margin: 0;
+          gap: 5px;
         }
-        .pagination-page {
-          margin: 0 5px; /* Space between items */
-          padding: 10px 15px;
-          border: 1px solid #666;
-          border-radius: 5px;
+        .pagination-item {
+          padding: 10px;
+          border: 1px solid #ccc;
+          cursor: pointer;
           background-color: #333;
           color: white;
-          cursor: pointer;
-          transition: background-color 0.3s;
         }
-        .pagination-page:hover {
-          background-color: #444;
-        }
-        .pagination-active {
-          background-color: #444; /* Active page style */
-          font-weight: bold;
-        }
-        .pagination-disabled {
-          opacity: 0.5; /* Style for disabled items */
-          pointer-events: none; /* Disable interaction */
+        .pagination-item.active {
+          background-color: #007bff;
+          color: white;
         }
       `}</style>
     </section>
