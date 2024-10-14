@@ -146,6 +146,7 @@ export default function CPUTable() {
                         style={{
                           width: '100%',
                           display: 'flex',
+                          height: '50px', // Set a fixed height
                           backgroundColor: selectedRow?.id === row.id ? '#3b3b3b' : '#1a1a1a',
                           color: 'white',
                           border: 'none',
