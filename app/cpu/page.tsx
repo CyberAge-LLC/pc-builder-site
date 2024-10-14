@@ -72,9 +72,12 @@ export default function CPUTable() {
 
   const requestSort = (key: keyof TableRow) => {
     let direction: 'ascending' | 'descending' = 'ascending';
-    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
+
+    // Determine the direction based on the current sort configuration
+    if (sortConfig && sortConfig.key === key) {
+      direction = sortConfig.direction === 'ascending' ? 'descending' : 'ascending';
     }
+    
     setSortConfig({ key, direction });
   };
 
