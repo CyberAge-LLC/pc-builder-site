@@ -1,6 +1,5 @@
 'use client';
 
-import LogoCloud from '@/components/ui/LogoCloud';
 import { createClient } from '@supabase/supabase-js';
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
@@ -111,8 +110,6 @@ export default function CPUTable() {
             CPU
           </p>
         </div>
-
-        <LogoCloud />
 
         <div>
           <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse' }}>
