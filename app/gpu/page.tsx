@@ -80,8 +80,21 @@ export default function GPUTable() {
 
   const sortData = (key: keyof TableRow, direction: 'ascending' | 'descending') => {
     const sorted = [...data].sort((a, b) => {
-      let aValue: number | null = parseFloat(a[key]);
-      let bValue: number | null = parseFloat(b[key]);
+      let aValue: number | null;
+      let bValue: number | null;
+
+      // Check if a[key] and b[key] are strings and parse them, otherwise treat them as numbers
+      if (typeof a[key] === 'string') {
+        aValue = parseFloat(a[key] as string);
+      } else {
+        aValue = a[key] as number;
+      }
+
+      if (typeof b[key] === 'string') {
+        bValue = parseFloat(b[key] as string);
+      } else {
+        bValue = b[key] as number;
+      }
 
       // Handle NaN values by treating them as null and placing them last
       if (isNaN(aValue)) aValue = null;
