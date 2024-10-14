@@ -64,7 +64,7 @@ export default function CPUTable() {
     }
   };
 
-  const handlePageClick = (event) => {
+  const handlePageClick = (event: PageClickEvent) => {
     setPage(event.selected);
   };
 
