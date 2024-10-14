@@ -30,14 +30,16 @@ export default function CPUTable() {
   const [data, setData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const rowsPerPage = 20; // Define how many rows per page
+  const rowsPerPage = 100; // Define how many rows per page
   const [sortConfig, setSortConfig] = useState<{ key: keyof TableRow; direction: 'ascending' | 'descending' } | null>(null);
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     fetchData();
   }, [page, sortConfig]);
 
   const fetchData = async () => {
+    setLoading(true); // Start loading
     // Fetch total row count to calculate total pages
     const { count, error: countError } = await supabase
       .from('cpu')
@@ -45,6 +47,7 @@ export default function CPUTable() {
 
     if (countError || count === null) {
       console.error('Error fetching row count:', countError);
+      setLoading(false);
       return;
     }
 
@@ -69,6 +72,7 @@ export default function CPUTable() {
 
       setData(filteredRows);
     }
+    setLoading(false); // Finished loading
   };
 
   const handlePageClick = (event: PageClickEvent) => {
@@ -124,8 +128,6 @@ export default function CPUTable() {
     return sortedData.slice(start, end);
   }, [sortedData, page, rowsPerPage]);
 
-  const hasData = paginatedData.length > 0;
-
   return (
     <section className="bg-black">
       <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
@@ -152,7 +154,13 @@ export default function CPUTable() {
               </tr>
             </thead>
             <tbody>
-              {hasData ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={8} style={{ padding: '10px', textAlign: 'center', color: 'white' }}>
+                    Loading...
+                  </td>
+                </tr>
+              ) : paginatedData.length > 0 ? (
                 paginatedData.map((row) => (
                   <tr key={row.id} style={{ display: 'flex', backgroundColor: '#1a1a1a', color: 'white', borderBottom: '1px solid #444' }}>
                     <td style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.name}</td>
