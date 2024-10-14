@@ -152,8 +152,11 @@ export default function CPUTable() {
                           cursor: 'pointer',
                           padding: '10px',
                           textAlign: 'center',
-                          borderBottom: '1px solid #444'
+                          borderBottom: '1px solid #444',
+                          transition: 'background-color 0.3s',
                         }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2b2b2b'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedRow?.id === row.id ? '#3b3b3b' : '#1a1a1a'}
                       >
                         <div style={{ flex: '1 1 10%' }}>{row.name}</div>
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price).toFixed(2)}</div>
