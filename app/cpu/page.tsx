@@ -88,15 +88,15 @@ export default function CPUTable() {
         <div>
           <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ display: 'flex', textAlign: 'left' }}>
-                <th style={{ flex: '1 1 15%', padding: '10px' }}>Name</th>
-                <th style={{ flex: '1 1 15%', padding: '10px' }}>Price</th>
-                <th style={{ flex: '1 1 10%', padding: '10px' }}>Core Count</th>
-                <th style={{ flex: '1 1 10%', padding: '10px' }}>Core Clock</th>
-                <th style={{ flex: '1 1 10%', padding: '10px' }}>Boost Clock</th>
-                <th style={{ flex: '1 1 15%', padding: '10px' }}>Microarchitecture</th>
-                <th style={{ flex: '1 1 10%', padding: '10px' }}>TDP</th>
-                <th style={{ flex: '1 1 10%', padding: '10px' }}>Graphics</th>
+              <tr style={{ display: 'flex', textAlign: 'left', backgroundColor: '#2a2a2a' }}>
+                <th style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white' }}>Name</th>
+                <th style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white' }}>Price</th>
+                <th style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white' }}>Core Count</th>
+                <th style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white' }}>Core Clock</th>
+                <th style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white' }}>Boost Clock</th>
+                <th style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white' }}>Microarchitecture</th>
+                <th style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white' }}>TDP</th>
+                <th style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white' }}>Graphics</th>
               </tr>
             </thead>
             <tbody>
@@ -111,7 +111,6 @@ export default function CPUTable() {
                           background: 'none',
                           border: 'none',
                           padding: '10px',
-                          textAlign: 'left',
                           cursor: 'pointer',
                           outline: 'none',
                           transition: 'background 0.3s',
@@ -126,14 +125,14 @@ export default function CPUTable() {
                           e.currentTarget.style.background = 'none'; // Revert background on mouse leave
                         }}
                       >
-                        <span style={{ flex: '1 1 15%', padding: '10px' }}>{row.name}</span>
-                        <span style={{ flex: '1 1 15%', padding: '10px' }}>{row.price}</span>
-                        <span style={{ flex: '1 1 10%', padding: '10px' }}>{row.core_count}</span>
-                        <span style={{ flex: '1 1 10%', padding: '10px' }}>{row.core_clock}</span>
-                        <span style={{ flex: '1 1 10%', padding: '10px' }}>{row.boost_clock}</span>
-                        <span style={{ flex: '1 1 15%', padding: '10px' }}>{row.microarchitecture}</span>
-                        <span style={{ flex: '1 1 10%', padding: '10px' }}>{row.tdp}</span>
-                        <span style={{ flex: '1 1 10%', padding: '10px' }}>{row.graphics}</span>
+                        <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.name}</span>
+                        <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.price}</span>
+                        <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_count}</span>
+                        <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_clock}</span>
+                        <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.boost_clock}</span>
+                        <span style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.microarchitecture}</span>
+                        <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.tdp}</span>
+                        <span style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.graphics}</span>
                       </button>
                     </td>
                   </tr>
