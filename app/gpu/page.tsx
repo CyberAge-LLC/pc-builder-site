@@ -39,7 +39,7 @@ export default function GPUTable() {
     setLoading(true);
 
     const { data: rows, count, error } = await supabase
-      .from('gputable') // Update with the correct table name in Supabase
+      .from('video-cad') // Update with the correct table name in Supabase
       .select('*', { count: 'exact' });
 
     if (error) {
