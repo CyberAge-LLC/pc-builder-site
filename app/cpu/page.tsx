@@ -7,7 +7,7 @@ import ReactPaginate from 'react-paginate';
 
 export default function CPUTable() {
   const supabaseUrl = "https://ogsbootxscuhnzosbkuy.supabase.co";
-  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3Nia3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0"; // Use your actual anon key
+  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3Nia3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0"; // Replace with your actual anon key
 
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -23,24 +23,20 @@ export default function CPUTable() {
     graphics: string;
   };
 
-  interface PageClickEvent {
-    selected: number;
-  }
-
   const [data, setData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const rowsPerPage = 50; // Define how many rows per page
+  const rowsPerPage = 50;
   const [sortConfig, setSortConfig] = useState<{ key: keyof TableRow; direction: 'ascending' | 'descending' } | null>(null);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
   }, [page, sortConfig]);
 
   const fetchData = async () => {
-    setLoading(true); // Start loading
-    // Fetch total row count to calculate total pages
+    setLoading(true);
+    
     const { count, error: countError } = await supabase
       .from('cpu')
       .select('*', { count: 'exact', head: true });
@@ -51,10 +47,8 @@ export default function CPUTable() {
       return;
     }
 
-    const totalPages = Math.ceil(count / rowsPerPage);
-    setTotalPages(totalPages);
+    setTotalPages(Math.ceil(count / rowsPerPage));
 
-    // Fetch data
     const { data: rows, error } = await supabase
       .from('cpu')
       .select('*')
@@ -63,21 +57,18 @@ export default function CPUTable() {
     if (error) {
       console.error('Error fetching data:', error);
     } else {
-      // Filter out rows with NaN values
       const filteredRows = rows?.filter(row => 
         !isNaN(parseFloat(row.price)) && 
         !isNaN(parseInt(row.core_count)) && 
         !isNaN(parseInt(row.tdp))
       ) || [];
-
       setData(filteredRows);
     }
-    setLoading(false); // Finished loading
+    setLoading(false);
   };
 
-  const handlePageClick = (event: PageClickEvent) => {
+  const handlePageClick = (event: { selected: number }) => {
     setPage(event.selected);
-    await fetchData();
   };
 
   const handleSort = (key: keyof TableRow) => {
@@ -90,30 +81,17 @@ export default function CPUTable() {
     setPage(0); // Reset to page 0 when sorting
   };
 
-  // Memoize sorted data
   const sortedData = React.useMemo(() => {
     let sortableData = [...data];
 
-    if (sortConfig !== null) {
+    if (sortConfig) {
       const { key, direction } = sortConfig;
 
       sortableData.sort((a, b) => {
-        let aValue: number | null = null;
-        let bValue: number | null = null;
+        let aValue = key === 'price' ? parseFloat(a[key]) : parseInt(a[key]);
+        let bValue = key === 'price' ? parseFloat(b[key]) : parseInt(b[key]);
 
-        if (key === 'price') {
-          aValue = parseFloat(a[key]);
-          bValue = parseFloat(b[key]);
-        } else if (key === 'core_count' || key === 'tdp') {
-          aValue = parseInt(a[key]);
-          bValue = parseInt(b[key]);
-        } else {
-          aValue = a[key] as unknown as number;
-          bValue = b[key] as unknown as number;
-        }
-
-        // Check if values are NaN, if so, omit them from sorting
-        if (isNaN(aValue!) || isNaN(bValue!)) return 0;
+        if (isNaN(aValue) || isNaN(bValue)) return 0;
 
         return direction === 'ascending' ? aValue - bValue : bValue - aValue;
       });
@@ -122,11 +100,9 @@ export default function CPUTable() {
     return sortableData;
   }, [data, sortConfig]);
 
-  // Calculate paginated data
   const paginatedData = React.useMemo(() => {
     const start = page * rowsPerPage;
-    const end = start + rowsPerPage;
-    return sortedData.slice(start, end);
+    return sortedData.slice(start, start + rowsPerPage);
   }, [sortedData, page, rowsPerPage]);
 
   return (
@@ -144,14 +120,15 @@ export default function CPUTable() {
           <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ display: 'flex', textAlign: 'left', backgroundColor: '#2a2a2a' }}>
-                <th onClick={() => handleSort('name')} style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Name</th>
-                <th onClick={() => handleSort('price')} style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Price</th>
-                <th onClick={() => handleSort('core_count')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Core Count</th>
-                <th onClick={() => handleSort('core_clock')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Core Clock</th>
-                <th onClick={() => handleSort('boost_clock')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Boost Clock</th>
-                <th onClick={() => handleSort('microarchitecture')} style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Microarchitecture</th>
-                <th onClick={() => handleSort('tdp')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>TDP</th>
-                <th onClick={() => handleSort('graphics')} style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}>Graphics</th>
+                {['name', 'price', 'core_count', 'core_clock', 'boost_clock', 'microarchitecture', 'tdp', 'graphics'].map((key) => (
+                  <th
+                    key={key}
+                    onClick={() => handleSort(key as keyof TableRow)}
+                    style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center', color: 'white', cursor: 'pointer' }}
+                  >
+                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -164,12 +141,12 @@ export default function CPUTable() {
               ) : paginatedData.length > 0 ? (
                 paginatedData.map((row) => (
                   <tr key={row.id} style={{ display: 'flex', backgroundColor: '#1a1a1a', color: 'white', borderBottom: '1px solid #444' }}>
-                    <td style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.name}</td>
-                    <td style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{parseFloat(row.price).toFixed(2)}</td>
+                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.name}</td>
+                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{parseFloat(row.price).toFixed(2)}</td>
                     <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_count}</td>
                     <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_clock}</td>
                     <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.boost_clock}</td>
-                    <td style={{ flex: '1 1 15%', padding: '10px', textAlign: 'center' }}>{row.microarchitecture}</td>
+                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.microarchitecture}</td>
                     <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.tdp}</td>
                     <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.graphics}</td>
                   </tr>
@@ -185,7 +162,6 @@ export default function CPUTable() {
           </table>
         </div>
 
-        {/* Pagination controls */}
         <div className="flex justify-center mt-6">
           <ReactPaginate
             breakLabel="..."
