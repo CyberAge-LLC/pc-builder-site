@@ -36,7 +36,8 @@ export default function CPUTable() {
 
   const fetchData = async () => {
     setLoading(true);
-    
+
+    // Fetch total row count to calculate total pages
     const { count, error: countError } = await supabase
       .from('cpu')
       .select('*', { count: 'exact', head: true });
@@ -49,6 +50,7 @@ export default function CPUTable() {
 
     setTotalPages(Math.ceil(count / rowsPerPage));
 
+    // Fetch data based on the current page
     const { data: rows, error } = await supabase
       .from('cpu')
       .select('*')
@@ -64,8 +66,16 @@ export default function CPUTable() {
       ) || [];
       setData(filteredRows);
     }
+  
     setLoading(false);
   };
+
+const handlePageClick = (event: { selected: number }) => {
+  const selectedPage = event.selected;
+  setPage(selectedPage);
+  fetchData(); // Fetch data for the new page
+};
+
 
   const handlePageClick = (event: { selected: number }) => {
     setPage(event.selected);
