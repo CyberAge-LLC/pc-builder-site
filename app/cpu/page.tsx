@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
+"use client"; // Marking this component as a client component
 
-// Define the interface for your CPU data
+import React, { useEffect, useState } from 'react';
+
+// Define the type for your CPU data
 interface CpuData {
   name: string;
   price: number;
@@ -13,35 +14,38 @@ interface CpuData {
   graphics: string;
 }
 
-// Initialize Supabase client
-const supabaseUrl = 'https://ogsbootxscuhnzosbkuy.supabase.co'; // Replace with your Supabase URL
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3Nia3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0'; // Replace with your Supabase public API key
-const supabase = createClient(supabaseUrl, supabaseKey);
-
 const CpuTable: React.FC = () => {
   const [data, setData] = useState<CpuData[]>([]);
   const [sortConfig, setSortConfig] = useState<{ key: keyof CpuData; direction: 'ascending' | 'descending' } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20; // Number of items to display per page
+  const [itemsPerPage] = useState(20);
 
   // Fetch data from Supabase
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await supabase
-        .from<CpuData>('cpu_data') // Replace 'cpu_data' with your actual table name
-        .select('*');
+      const SUPABASE_URL = 'https://your-supabase-url.supabase.co'; // Replace with your Supabase URL
+      const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3Nia3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0'; // Replace with your Supabase Anon key
 
-      if (error) {
-        console.error('Error fetching data:', error);
-      } else {
-        setData(data);
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/cpus`, {
+        headers: {
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+        },
+      });
+
+      if (!response.ok) {
+        console.error('Error fetching data:', response.statusText);
+        return;
       }
+
+      const result = await response.json();
+      setData(result);
     };
 
     fetchData();
   }, []);
 
-  // Handle sorting of the data
   const handleSort = (key: keyof CpuData) => {
     let direction: 'ascending' | 'descending' = 'ascending';
 
@@ -53,8 +57,7 @@ const CpuTable: React.FC = () => {
     setCurrentPage(1); // Reset to page 1 on sort
   };
 
-  // Sort and filter data based on the sort configuration
-  const sortedData = useMemo(() => {
+  const sortedData = React.useMemo(() => {
     let sortableData = [...data];
 
     if (sortConfig) {
@@ -62,7 +65,6 @@ const CpuTable: React.FC = () => {
         const aValue = a[sortConfig.key];
         const bValue = b[sortConfig.key];
 
-        // Handle sorting for numbers and strings
         if (typeof aValue === 'number' && typeof bValue === 'number') {
           return sortConfig.direction === 'ascending' ? aValue - bValue : bValue - aValue;
         } else if (typeof aValue === 'string' && typeof bValue === 'string') {
@@ -73,12 +75,12 @@ const CpuTable: React.FC = () => {
     }
 
     // Filter out rows with NaN values
-    return sortableData.filter(row =>
+    return sortableData.filter(row => 
       Object.values(row).every(value => value !== null && !isNaN(Number(value)))
     );
   }, [data, sortConfig]);
 
-  // Calculate total pages based on the sorted data
+  // Calculate total pages
   const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
   // Slice the sorted data for the current page
@@ -86,7 +88,6 @@ const CpuTable: React.FC = () => {
 
   return (
     <div>
-      <h1>CPU Data Table</h1>
       <table>
         <thead>
           <tr>
@@ -106,10 +107,10 @@ const CpuTable: React.FC = () => {
               <td>{row.name}</td>
               <td>${row.price.toFixed(2)}</td>
               <td>{row.core_count}</td>
-              <td>{row.clock_speed}</td>
-              <td>{row.tdp}</td>
+              <td>{row.clock_speed} GHz</td>
+              <td>{row.tdp} W</td>
               <td>{row.architecture}</td>
-              <td>{row.cache}</td>
+              <td>{row.cache} MB</td>
               <td>{row.graphics}</td>
             </tr>
           ))}
@@ -120,8 +121,7 @@ const CpuTable: React.FC = () => {
           )}
         </tbody>
       </table>
-
-      {/* Pagination Controls */}
+      
       <div>
         {Array.from({ length: totalPages }, (_, index) => (
           <button
@@ -132,11 +132,6 @@ const CpuTable: React.FC = () => {
             {index + 1}
           </button>
         ))}
-      </div>
-
-      {/* Display total count of items */}
-      <div>
-        Showing {currentData.length} of {sortedData.length} results
       </div>
     </div>
   );
