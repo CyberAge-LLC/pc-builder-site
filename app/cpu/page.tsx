@@ -28,6 +28,7 @@ export default function CPUTable() {
   const rowsPerPage = 50;
   const [sortConfig, setSortConfig] = useState<{ key: keyof TableRow; direction: 'ascending' | 'descending' } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedRow, setSelectedRow] = useState<TableRow | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -36,7 +37,6 @@ export default function CPUTable() {
   const fetchData = async () => {
     setLoading(true);
     
-    // Fetch all data from the database
     const { data: rows, count, error } = await supabase
       .from('cpu')
       .select('*', { count: 'exact' });
@@ -53,7 +53,6 @@ export default function CPUTable() {
       !isNaN(parseInt(row.tdp))
     ) || [];
 
-    // Use a fallback for count to prevent null error
     const totalRowCount = count ?? 0;
     setData(filteredRows);
     setTotalPages(Math.ceil(totalRowCount / rowsPerPage));
@@ -71,8 +70,8 @@ export default function CPUTable() {
     }
 
     setSortConfig({ key, direction });
-    setPage(0); // Reset to page 0 when sorting
-    sortData(key, direction); // Sort the data immediately
+    setPage(0);
+    sortData(key, direction);
   };
 
   const sortData = (key: keyof TableRow, direction: 'ascending' | 'descending') => {
@@ -94,13 +93,18 @@ export default function CPUTable() {
     });
 
     setData(sorted);
-    setTotalPages(Math.ceil(sorted.length / rowsPerPage)); // Update total pages based on sorted data
+    setTotalPages(Math.ceil(sorted.length / rowsPerPage));
   };
 
   const paginatedData = React.useMemo(() => {
     const start = page * rowsPerPage;
     return data.slice(start, start + rowsPerPage);
   }, [data, page, rowsPerPage]);
+
+  const handleRowClick = (row: TableRow) => {
+    setSelectedRow(row);
+    console.log('Selected row:', row); // Replace with your desired action
+  };
 
   return (
     <section className="bg-black">
@@ -135,15 +139,32 @@ export default function CPUTable() {
                 </tr>
               ) : paginatedData.length > 0 ? (
                 paginatedData.map((row) => (
-                  <tr key={row.id} style={{ display: 'flex', backgroundColor: '#1a1a1a', color: 'white', borderBottom: '1px solid #444' }}>
-                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.name}</td>
-                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{parseFloat(row.price).toFixed(2)}</td>
-                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_count}</td>
-                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.core_clock}</td>
-                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.boost_clock}</td>
-                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.microarchitecture}</td>
-                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.tdp}</td>
-                    <td style={{ flex: '1 1 10%', padding: '10px', textAlign: 'center' }}>{row.graphics}</td>
+                  <tr key={row.id}>
+                    <td colSpan={8} style={{ padding: '0' }}>
+                      <button
+                        onClick={() => handleRowClick(row)}
+                        style={{
+                          width: '100%',
+                          display: 'flex',
+                          backgroundColor: selectedRow?.id === row.id ? '#3b3b3b' : '#1a1a1a',
+                          color: 'white',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: '10px',
+                          textAlign: 'center',
+                          borderBottom: '1px solid #444'
+                        }}
+                      >
+                        <div style={{ flex: '1 1 10%' }}>{row.name}</div>
+                        <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price).toFixed(2)}</div>
+                        <div style={{ flex: '1 1 10%' }}>{row.core_count}</div>
+                        <div style={{ flex: '1 1 10%' }}>{row.core_clock}</div>
+                        <div style={{ flex: '1 1 10%' }}>{row.boost_clock}</div>
+                        <div style={{ flex: '1 1 10%' }}>{row.microarchitecture}</div>
+                        <div style={{ flex: '1 1 10%' }}>{row.tdp}</div>
+                        <div style={{ flex: '1 1 10%' }}>{row.graphics}</div>
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -172,7 +193,7 @@ export default function CPUTable() {
             nextClassName="mx-2 px-4 py-2 border rounded-md cursor-pointer bg-gray-700 text-white hover:bg-gray-600"
             pageClassName="mx-1"
             pageLinkClassName="px-4 py-2 border rounded-md cursor-pointer bg-gray-800 text-white hover:bg-gray-700"
-            forcePage={page} // Ensure the pagination component reflects the current page state
+            forcePage={page}
           />
         </div>
       </div>
