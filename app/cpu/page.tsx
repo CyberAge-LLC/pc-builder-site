@@ -26,7 +26,7 @@ interface PageClickEvent {
   selected: number;
 }
 
-export default function CPUTable({ data, totalPages, handlePageClick }) {
+export default function CPUTable() {
   const [data, setData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -68,8 +68,10 @@ export default function CPUTable({ data, totalPages, handlePageClick }) {
     setPage(event.selected);
   };
 
+  const hasData = Array.isArray(data) && data.length > 0;
+
   return (
-     <div className="bg-black"> {/* Ensure JSX is wrapped in one root element */}
+     <div className="bg-black">
       <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
         <div className="sm:flex sm:flex-col sm:align-center">
           <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
