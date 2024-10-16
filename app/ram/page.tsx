@@ -4,9 +4,9 @@ import { createClient } from '@supabase/supabase-js';
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 
-export default function MemoryTable() {
+export default function RAMTable() {
   const supabaseUrl = "https://ogsbootxscuhnzosbkuy.supabase.co";
-  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3Nia3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0"; // Replace with your actual anon key
+  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0"; // Replace with your actual anon key
 
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -48,7 +48,6 @@ export default function MemoryTable() {
       return;
     }
 
-    // Filter out rows where price is NaN or 0.00
     const filteredRows = rows?.filter(row =>
       !isNaN(parseFloat(row.price)) &&
       parseFloat(row.price) !== 0 &&
@@ -93,11 +92,10 @@ export default function MemoryTable() {
         bValue = parseInt(b[key] as string);
       }
 
-      // Place NaN (null) values at the end
       if (isNaN(aValue)) aValue = null;
       if (isNaN(bValue)) bValue = null;
 
-      if (aValue === null) return 1; // Move NaN values to the bottom
+      if (aValue === null) return 1;
       if (bValue === null) return -1;
 
       return direction === 'ascending' ? aValue - bValue : bValue - aValue;
@@ -107,7 +105,6 @@ export default function MemoryTable() {
     setTotalPages(Math.ceil(sorted.length / rowsPerPage)); // Recalculate total pages based on sorted data length
   };
 
-  // Memoize paginated data to avoid recalculating on every render
   const paginatedData = React.useMemo(() => {
     const start = page * rowsPerPage;
     return data.slice(start, start + rowsPerPage);
@@ -115,7 +112,6 @@ export default function MemoryTable() {
 
   const handleRowClick = (row: TableRow) => {
     setSelectedRow(row);
-    console.log('Selected row:', row); // Replace with your desired action
   };
 
   return (
@@ -123,7 +119,7 @@ export default function MemoryTable() {
       <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
         <div className="sm:flex sm:flex-col sm:align-center">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-            Select Memory
+            Select RAM
           </h1>
         </div>
 
@@ -200,24 +196,26 @@ export default function MemoryTable() {
           </table>
         </div>
 
-        <div className="flex justify-center mt-6">
-          <ReactPaginate
-            breakLabel="..."
-            nextLabel="Next >"
-            onPageChange={handlePageClick}
-            pageRangeDisplayed={2}
-            pageCount={totalPages}
-            previousLabel="< Previous"
-            renderOnZeroPageCount={null}
-            className="flex items-center"
-            activeClassName="bg-blue-500 text-white"
-            previousClassName="mx-2 px-4 py-2 border rounded-md cursor-pointer bg-gray-700 text-white hover:bg-gray-600"
-            nextClassName="mx-2 px-4 py-2 border rounded-md cursor-pointer bg-gray-700 text-white hover:bg-gray-600"
-            pageClassName="mx-1"
-            pageLinkClassName="px-4 py-2 border rounded-md cursor-pointer bg-gray-800 text-white hover:bg-gray-700"
-            forcePage={page}
-          />
-        </div>
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-6">
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel="Next >"
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={2}
+              pageCount={totalPages}
+              previousLabel="< Previous"
+              renderOnZeroPageCount={null}
+              className="flex items-center"
+              activeClassName="bg-blue-500 text-white"
+              previousClassName="mx-2 px-4 py-2 border rounded-md cursor-pointer bg-gray-700 text-white hover:bg-gray-600"
+              nextClassName="mx-2 px-4 py-2 border rounded-md cursor-pointer bg-gray-700 text-white hover:bg-gray-600"
+              pageClassName="mx-1"
+              pageLinkClassName="px-4 py-2 border rounded-md cursor-pointer bg-gray-800 text-white hover:bg-gray-700"
+              forcePage={page}
+            />
+          </div>
+        )}
       </div>
     </section>
   );
