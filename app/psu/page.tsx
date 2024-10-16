@@ -65,8 +65,8 @@ export default function PowerSupplyTable() {
   };
 
   const handleSort = (key: keyof TableRow) => {
-    // Only allow sorting for numeric fields
-    if (key === 'name' || key === 'type' || key === 'modular' || key === 'color') return;
+    // Only allow sorting for numeric fields and disable sorting for non-numeric fields, including efficiency
+    if (key === 'name' || key === 'type' || key === 'modular' || key === 'color' || key === 'efficiency') return;
 
     let direction: 'ascending' | 'descending' = 'ascending';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -136,7 +136,7 @@ export default function PowerSupplyTable() {
                       padding: '10px',
                       textAlign: 'center',
                       color: 'white',
-                      cursor: key === 'name' || key === 'type' || key === 'modular' || key === 'color' ? 'default' : 'pointer',
+                      cursor: (key === 'name' || key === 'type' || key === 'modular' || key === 'color' || key === 'efficiency') ? 'default' : 'pointer',
                     }}
                   >
                     {key.charAt(0).toUpperCase() + key.slice(1)}
