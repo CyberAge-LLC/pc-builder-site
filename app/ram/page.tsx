@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 
-export default function RAMTable() {
+export default function MemoryTable() {
   const supabaseUrl = "https://ogsbootxscuhnzosbkuy.supabase.co";
   const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3Nia3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0"; // Replace with your actual anon key
 
@@ -39,7 +39,7 @@ export default function RAMTable() {
     setLoading(true);
 
     const { data: rows, error } = await supabase
-      .from('memory')
+      .from('memory') // Make sure the table name is correct
       .select('*', { count: 'exact' });
 
     if (error) {
@@ -48,6 +48,7 @@ export default function RAMTable() {
       return;
     }
 
+    // Filter out rows where price is NaN or 0.00
     const filteredRows = rows?.filter(row =>
       !isNaN(parseFloat(row.price)) &&
       parseFloat(row.price) !== 0 &&
@@ -105,6 +106,7 @@ export default function RAMTable() {
     setTotalPages(Math.ceil(sorted.length / rowsPerPage)); // Recalculate total pages based on sorted data length
   };
 
+  // Memoize paginated data to avoid recalculating on every render
   const paginatedData = React.useMemo(() => {
     const start = page * rowsPerPage;
     return data.slice(start, start + rowsPerPage);
@@ -119,7 +121,7 @@ export default function RAMTable() {
       <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
         <div className="sm:flex sm:flex-col sm:align-center">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-            Select RAM
+            Select Memory
           </h1>
         </div>
 
