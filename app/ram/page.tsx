@@ -42,6 +42,8 @@ export default function RAMTable() {
       .from('memory') // Make sure the table name is correct
       .select('*', { count: 'exact' });
 
+    console.log('Fetched rows:', rows); // Log the fetched data
+
     if (error) {
       console.error('Error fetching data:', error);
       setLoading(false);
