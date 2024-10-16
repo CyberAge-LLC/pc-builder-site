@@ -25,7 +25,7 @@ export default function RAMTable() {
   const [data, setData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const rowsPerPage = 50;
+  const rowsPerPage = 100;
   const [sortConfig, setSortConfig] = useState<{ key: keyof TableRow; direction: 'ascending' | 'descending' } | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedRow, setSelectedRow] = useState<TableRow | null>(null);
