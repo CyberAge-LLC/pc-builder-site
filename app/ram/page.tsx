@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 
-export default function MemoryTable() {
+export default function RAMTable() {
   const supabaseUrl = "https://ogsbootxscuhnzosbkuy.supabase.co";
   const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3Nia3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0"; // Replace with your actual anon key
 
@@ -121,7 +121,7 @@ export default function MemoryTable() {
       <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
         <div className="sm:flex sm:flex-col sm:align-center">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-            Select Memory
+            Select RAM
           </h1>
         </div>
 
