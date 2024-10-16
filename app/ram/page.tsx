@@ -6,7 +6,7 @@ import ReactPaginate from 'react-paginate';
 
 export default function RAMTable() {
   const supabaseUrl = "https://ogsbootxscuhnzosbkuy.supabase.co";
-  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3Nia3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0"; // Replace with your actual anon key
+  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0"; // Replace with your actual anon key
 
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -15,7 +15,7 @@ export default function RAMTable() {
     name: string;
     price: string;
     speed: string;
-    modules: string; // modules will contain two values, e.g., "2, 16"
+    modules: [number, number]; // The modules field contains an array like [2, 16]
     price_per_gb: string;
     color: string;
     first_word_lat: string;
@@ -107,9 +107,8 @@ export default function RAMTable() {
   };
 
   // Helper function to format the modules column as 2x16
-  const formatModules = (modules: string): string => {
-    const moduleValues = modules.split(',').map(value => value.trim());
-    return moduleValues.length === 2 ? `${moduleValues[0]}x${moduleValues[1]}` : modules;
+  const formatModules = (modules: [number, number]): string => {
+    return `${modules[0]}x${modules[1]}`;
   };
 
   // Memoize paginated data to avoid recalculating on every render
