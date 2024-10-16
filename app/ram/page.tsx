@@ -15,7 +15,7 @@ export default function RAMTable() {
     name: string;
     price: string;
     speed: string;
-    modules: string;
+    modules: string; // modules will contain two values, e.g., "2, 16"
     price_per_gb: string;
     color: string;
     first_word_lat: string;
@@ -25,7 +25,7 @@ export default function RAMTable() {
   const [data, setData] = useState<TableRow[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const rowsPerPage = 100;
+  const rowsPerPage = 50;
   const [sortConfig, setSortConfig] = useState<{ key: keyof TableRow; direction: 'ascending' | 'descending' } | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedRow, setSelectedRow] = useState<TableRow | null>(null);
@@ -39,10 +39,8 @@ export default function RAMTable() {
     setLoading(true);
 
     const { data: rows, error } = await supabase
-      .from('memory') // Make sure the table name is correct
+      .from('memory') // Ensure the table name is correct
       .select('*', { count: 'exact' });
-
-    console.log('Fetched rows:', rows); // Log the fetched data
 
     if (error) {
       console.error('Error fetching data:', error);
@@ -106,6 +104,12 @@ export default function RAMTable() {
 
     setData(sorted);
     setTotalPages(Math.ceil(sorted.length / rowsPerPage)); // Recalculate total pages based on sorted data length
+  };
+
+  // Helper function to format the modules column as 2x16
+  const formatModules = (modules: string): string => {
+    const moduleValues = modules.split(',').map(value => value.trim());
+    return moduleValues.length === 2 ? `${moduleValues[0]}x${moduleValues[1]}` : modules;
   };
 
   // Memoize paginated data to avoid recalculating on every render
@@ -180,7 +184,7 @@ export default function RAMTable() {
                         <div style={{ flex: '1 1 10%' }}>{row.name}</div>
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price).toFixed(2)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.speed}</div>
-                        <div style={{ flex: '1 1 10%' }}>{row.modules}</div>
+                        <div style={{ flex: '1 1 10%' }}>{formatModules(row.modules)}</div>
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price_per_gb).toFixed(2)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.color}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.first_word_lat}</div>
