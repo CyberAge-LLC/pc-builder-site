@@ -14,7 +14,7 @@ export default function MemoryTable() {
     id: number;
     name: string;
     price: string;
-    speed: number[]; // speed is an array, e.g., [3600]
+    speed: number[] | string; // Speed can be an array or a single value
     modules: [number, number]; // The modules field contains an array like [2, 16]
     price_per_gb: string;
     color: string;
@@ -110,9 +110,14 @@ export default function MemoryTable() {
     return `${modules[0]}x${modules[1]}`;
   };
 
-  // Helper function to format the speed column as a single value or a list
-  const formatSpeed = (speed: number[]): string => {
-    return speed.length > 0 ? speed.join(', ') : 'N/A';
+  // Helper function to format the speed column
+  const formatSpeed = (speed: number[] | string | null | undefined): string => {
+    if (Array.isArray(speed)) {
+      return speed.length > 0 ? speed.join(', ') : 'N/A';
+    } else if (typeof speed === 'string' || typeof speed === 'number') {
+      return String(speed); // If speed is a single value
+    }
+    return 'N/A'; // If speed is null or undefined
   };
 
   // Memoize paginated data to avoid recalculating on every render
