@@ -4,9 +4,9 @@ import { createClient } from '@supabase/supabase-js';
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 
-export default function RAMTable() {
+export default function MemoryTable() {
   const supabaseUrl = "https://ogsbootxscuhnzosbkuy.supabase.co";
- const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3Nia3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0"; // Replace with your actual anon key
+  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nc2Jvb3R4c2N1aG56b3Nia3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzMwNjUsImV4cCI6MjA0NDAwOTA2NX0.41OqYzDjnCgcdPK4lo2--AGOSW3mVGw23khghZUxDw0"; // Replace with your actual anon key
 
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -14,7 +14,7 @@ export default function RAMTable() {
     id: number;
     name: string;
     price: string;
-    speed: string;
+    speed: number[]; // speed is an array, e.g., [3600]
     modules: [number, number]; // The modules field contains an array like [2, 16]
     price_per_gb: string;
     color: string;
@@ -52,7 +52,6 @@ export default function RAMTable() {
     const filteredRows = rows?.filter(row =>
       !isNaN(parseFloat(row.price)) &&
       parseFloat(row.price) !== 0 &&
-      !isNaN(parseInt(row.speed)) &&
       !isNaN(parseInt(row.cas_latency))
     ) || [];
 
@@ -85,7 +84,7 @@ export default function RAMTable() {
       let aValue: number | null;
       let bValue: number | null;
 
-      if (key === 'price' || key === 'speed' || key === 'price_per_gb' || key === 'cas_latency' || key === 'first_word_lat') {
+      if (key === 'price' || key === 'price_per_gb' || key === 'cas_latency' || key === 'first_word_lat') {
         aValue = parseFloat(a[key] as string);
         bValue = parseFloat(b[key] as string);
       } else {
@@ -109,6 +108,11 @@ export default function RAMTable() {
   // Helper function to format the modules column as 2x16
   const formatModules = (modules: [number, number]): string => {
     return `${modules[0]}x${modules[1]}`;
+  };
+
+  // Helper function to format the speed column as a single value or a list
+  const formatSpeed = (speed: number[]): string => {
+    return speed.length > 0 ? speed.join(', ') : 'N/A';
   };
 
   // Memoize paginated data to avoid recalculating on every render
@@ -182,7 +186,7 @@ export default function RAMTable() {
                       >
                         <div style={{ flex: '1 1 10%' }}>{row.name}</div>
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price).toFixed(2)}</div>
-                        <div style={{ flex: '1 1 10%' }}>{row.speed}</div>
+                        <div style={{ flex: '1 1 10%' }}>{formatSpeed(row.speed)}</div>
                         <div style={{ flex: '1 1 10%' }}>{formatModules(row.modules)}</div>
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price_per_gb).toFixed(2)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.color}</div>
