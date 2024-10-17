@@ -14,8 +14,8 @@ export default function MemoryTable() {
     id: number;
     name: string;
     price: string;
-    speed: string; // Not sortable
-    modules: string;
+    speed: string | number[]; // Can be string or array of numbers
+    modules: string | number[]; // Can be string or array of numbers
     price_per_gigabyte: string; // Sortable, numeric
     color: string;
     first_word_latency: string; // Sortable, numeric
@@ -65,7 +65,7 @@ export default function MemoryTable() {
   };
 
   // Helper function to calculate price per gigabyte if it is NaN
-  const calculatePricePerGigabyte = (price: string, modules: string) => {
+  const calculatePricePerGigabyte = (price: string, modules: string | number[]) => {
     const priceValue = parseFloat(price);
     const moduleArray = safelyParseArray(modules); // Safely parse modules array
     const totalCapacity = moduleArray.reduce((acc: number, curr: number) => acc + curr, 0);
@@ -75,11 +75,18 @@ export default function MemoryTable() {
     return '0'; // Default to 0 if calculation is not possible
   };
 
-  // Safely parse JSON array
-  const safelyParseArray = (value: string) => {
+  // Safely parse an array whether it's a string or already an array
+  const safelyParseArray = (value: string | number[]) => {
+    if (Array.isArray(value)) {
+      return value; // If it's already an array, return it
+    }
+
     try {
-      const parsedArray = JSON.parse(value.replace(/\[|\]/g, '').split(',').map(Number));
-      return Array.isArray(parsedArray) ? parsedArray : [];
+      const parsedArray = value
+        .replace(/\[|\]/g, '') // Remove brackets
+        .split(',') // Split by commas
+        .map(Number); // Convert to numbers
+      return parsedArray.filter(n => !isNaN(n)); // Filter out invalid numbers
     } catch (e) {
       console.error('Error parsing array:', e);
       return []; // Return empty array on error
@@ -201,8 +208,8 @@ export default function MemoryTable() {
                       >
                         <div style={{ flex: '1 1 10%' }}>{row.name}</div>
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price).toFixed(2)}</div>
-                        <div style={{ flex: '1 1 10%' }}>{row.speed}</div>
-                        <div style={{ flex: '1 1 10%' }}>{row.modules}</div>
+                        <div style={{ flex: '1 1 10%' }}>{Array.isArray(row.speed) ? row.speed.join('x') : row.speed}</div>
+                        <div style={{ flex: '1 1 10%' }}>{Array.isArray(row.modules) ? row.modules.join('x') : row.modules}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.price_per_gigabyte}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.color}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.first_word_latency}</div>
