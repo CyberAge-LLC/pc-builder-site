@@ -15,9 +15,9 @@ export default function MemoryTable() {
     name: string;
     price: string;
     speed: string; // Not sortable
-    modules: string; // Not sortable
+    modules: string;
     price_per_gigabyte: string; // Sortable, numeric
-    color: string; // Not sortable
+    color: string;
     first_word_latency: string; // Sortable, numeric
     cas_latency: string; // Sortable, integer
   };
@@ -127,7 +127,7 @@ export default function MemoryTable() {
           <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ display: 'flex', textAlign: 'left', backgroundColor: '#2a2a2a' }}>
-                {['name', 'price', 'speed', 'modules', 'price_per_gigabyte', 'color', 'first_word_lat', 'cas_latency'].map((key) => (
+                {['name', 'price', 'speed', 'modules', 'price_per_gigabyte', 'color', 'first_word_latency', 'cas_latency'].map((key) => (
                   <th
                     key={key}
                     onClick={() => handleSort(key as keyof TableRow)}
@@ -179,7 +179,7 @@ export default function MemoryTable() {
                         <div style={{ flex: '1 1 10%' }}>{row.modules}</div>
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price_per_gigabyte).toFixed(3)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.color}</div>
-                        <div style={{ flex: '1 1 10%' }}>{row.first_word_lat}</div>
+                        <div style={{ flex: '1 1 10%' }}>{row.first_word_latency}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.cas_latency}</div>
                       </button>
                     </td>
