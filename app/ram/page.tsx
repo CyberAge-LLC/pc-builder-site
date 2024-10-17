@@ -34,7 +34,7 @@ export default function MemoryTable() {
     fetchData();
   }, []);
 
-  // Fetch data and set total pages based on the row count
+  // Fetch data and filter out rows with NaN price
   const fetchData = async () => {
     setLoading(true);
 
@@ -48,15 +48,16 @@ export default function MemoryTable() {
       return;
     }
 
-    // Filter out rows where price is NaN or 0.00 and handle NaN and parsing errors
-    const filteredRows = rows?.map(row => ({
-      ...row,
-      price_per_gigabyte: isNaN(parseFloat(row.price_per_gigabyte)) ? calculatePricePerGigabyte(row.price, row.modules) : row.price_per_gigabyte,
-      first_word_latency: isNaN(parseFloat(row.first_word_latency)) ? '0' : row.first_word_latency,
-      cas_latency: isNaN(parseInt(row.cas_latency)) ? '0' : row.cas_latency,
-      modules: safelyParseArray(row.modules),  // Safely parse modules array
-      speed: safelyParseArray(row.speed)       // Safely parse speed array
-    })) || [];
+    // Filter out rows where price is NaN or 0.00
+    const filteredRows = rows?.filter(row => !isNaN(parseFloat(row.price)))  // Omit rows where price is NaN
+      .map(row => ({
+        ...row,
+        price_per_gigabyte: isNaN(parseFloat(row.price_per_gigabyte)) ? calculatePricePerGigabyte(row.price, row.modules) : row.price_per_gigabyte,
+        first_word_latency: isNaN(parseFloat(row.first_word_latency)) ? '0' : row.first_word_latency,
+        cas_latency: isNaN(parseInt(row.cas_latency)) ? '0' : row.cas_latency,
+        modules: safelyParseArray(row.modules),  // Safely parse modules array
+        speed: safelyParseArray(row.speed)       // Safely parse speed array
+      })) || [];
 
     const totalRowCount = filteredRows.length;
     setData(filteredRows);
