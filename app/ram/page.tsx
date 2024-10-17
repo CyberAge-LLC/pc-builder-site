@@ -49,15 +49,28 @@ export default function MemoryTable() {
     }
 
     // Filter out rows where price is NaN or 0.00
-    const filteredRows = rows?.filter(row =>
-      !isNaN(parseFloat(row.price)) &&
-      parseFloat(row.price) !== 0
-    ) || [];
+    const filteredRows = rows?.map(row => ({
+      ...row,
+      price_per_gigabyte: isNaN(parseFloat(row.price_per_gigabyte)) ? calculatePricePerGigabyte(row.price, row.modules) : row.price_per_gigabyte,
+      first_word_latency: isNaN(parseFloat(row.first_word_latency)) ? '0' : row.first_word_latency,
+      cas_latency: isNaN(parseInt(row.cas_latency)) ? '0' : row.cas_latency,
+    })) || [];
 
     const totalRowCount = filteredRows.length;
     setData(filteredRows);
     setTotalPages(Math.ceil(totalRowCount / rowsPerPage)); // Calculate total pages based on filtered data
     setLoading(false);
+  };
+
+  // Helper function to calculate price per gigabyte if it is NaN
+  const calculatePricePerGigabyte = (price: string, modules: string) => {
+    const priceValue = parseFloat(price);
+    const moduleArray = JSON.parse(modules.replace(/\[|\]/g, '')); // Parsing the modules array
+    const totalCapacity = moduleArray.reduce((acc: number, curr: number) => acc + curr, 0);
+    if (!isNaN(priceValue) && totalCapacity > 0) {
+      return (priceValue / totalCapacity).toFixed(3);
+    }
+    return '0'; // Default to 0 if calculation is not possible
   };
 
   const handlePageClick = (event: { selected: number }) => {
@@ -177,7 +190,7 @@ export default function MemoryTable() {
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price).toFixed(2)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.speed}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.modules}</div>
-                        <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price_per_gigabyte).toFixed(3)}</div>
+                        <div style={{ flex: '1 1 10%' }}>{row.price_per_gigabyte}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.color}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.first_word_latency}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.cas_latency}</div>
