@@ -14,12 +14,12 @@ export default function MemoryTable() {
     id: number;
     name: string;
     price: string;
-    speed: string; // Kept as a string
+    speed: string; // Not sortable
     modules: string;
-    price_per_gigabyte: string; // Title with underscores retained
+    price_per_gigabyte: string; // Will show up to 3 decimal places
     color: string;
-    first_word_lat: string; // Title with underscores retained
-    cas_latency: string; // Title with underscores retained
+    first_word_lat: string;
+    cas_latency: string;
   };
 
   const [data, setData] = useState<TableRow[]>([]);
@@ -65,8 +65,8 @@ export default function MemoryTable() {
   };
 
   const handleSort = (key: keyof TableRow) => {
-    // Only allow sorting for numeric fields and disable sorting for non-numeric fields like name, modules, and color
-    if (key === 'name' || key === 'modules' || key === 'color') return;
+    // Only allow sorting for numeric fields, disable sorting for name, modules, color, and speed
+    if (key === 'name' || key === 'modules' || key === 'color' || key === 'speed') return;
 
     let direction: 'ascending' | 'descending' = 'ascending';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -124,7 +124,7 @@ export default function MemoryTable() {
                       padding: '10px',
                       textAlign: 'center',
                       color: 'white',
-                      cursor: (key === 'name' || key === 'modules' || key === 'color') ? 'default' : 'pointer',
+                      cursor: (key === 'name' || key === 'modules' || key === 'color' || key === 'speed') ? 'default' : 'pointer',
                     }}
                   >
                     {key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')}
@@ -165,7 +165,7 @@ export default function MemoryTable() {
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price).toFixed(2)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.speed}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.modules}</div>
-                        <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price_per_gigabyte).toFixed(2)}</div>
+                        <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price_per_gigabyte).toFixed(3)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.color}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.first_word_lat}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.cas_latency}</div>
