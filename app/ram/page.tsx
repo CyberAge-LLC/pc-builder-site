@@ -14,8 +14,8 @@ export default function MemoryTable() {
     id: number;
     name: string;
     price: string;
-    speed: number[] | string; // Speed can be an array or a single value
-    modules: [number, number]; // The modules field contains an array like [2, 16]
+    speed: string;
+    modules: string;
     price_per_gb: string;
     color: string;
     first_word_lat: string;
@@ -51,8 +51,7 @@ export default function MemoryTable() {
     // Filter out rows where price is NaN or 0.00
     const filteredRows = rows?.filter(row =>
       !isNaN(parseFloat(row.price)) &&
-      parseFloat(row.price) !== 0 &&
-      !isNaN(parseInt(row.cas_latency))
+      parseFloat(row.price) !== 0
     ) || [];
 
     const totalRowCount = filteredRows.length;
@@ -66,8 +65,8 @@ export default function MemoryTable() {
   };
 
   const handleSort = (key: keyof TableRow) => {
-    // Only allow sorting for numeric fields
-    if (key === 'name' || key === 'color') return;
+    // Only allow sorting for numeric fields and disable sorting for non-numeric fields
+    if (key === 'name' || key === 'modules' || key === 'color') return;
 
     let direction: 'ascending' | 'descending' = 'ascending';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -84,7 +83,7 @@ export default function MemoryTable() {
       let aValue: number | null;
       let bValue: number | null;
 
-      if (key === 'price' || key === 'price_per_gb' || key === 'cas_latency' || key === 'first_word_lat') {
+      if (key === 'price' || key === 'price_per_gb' || key === 'cas_latency' || key === 'first_word_lat' || key === 'speed') {
         aValue = parseFloat(a[key] as string);
         bValue = parseFloat(b[key] as string);
       } else {
@@ -95,7 +94,7 @@ export default function MemoryTable() {
       if (isNaN(aValue)) aValue = null;
       if (isNaN(bValue)) bValue = null;
 
-      if (aValue === null) return 1;
+      if (aValue === null) return 1; // Move NaN values to the bottom
       if (bValue === null) return -1;
 
       return direction === 'ascending' ? aValue - bValue : bValue - aValue;
@@ -103,21 +102,6 @@ export default function MemoryTable() {
 
     setData(sorted);
     setTotalPages(Math.ceil(sorted.length / rowsPerPage)); // Recalculate total pages based on sorted data length
-  };
-
-  // Helper function to format the modules column as 2x16
-  const formatModules = (modules: [number, number]): string => {
-    return `${modules[0]}x${modules[1]}`;
-  };
-
-  // Helper function to format the speed column
-  const formatSpeed = (speed: number[] | string | null | undefined): string => {
-    if (Array.isArray(speed)) {
-      return speed.length > 0 ? speed.join(', ') : 'N/A';
-    } else if (typeof speed === 'string' || typeof speed === 'number') {
-      return String(speed); // If speed is a single value
-    }
-    return 'N/A'; // If speed is null or undefined
   };
 
   // Memoize paginated data to avoid recalculating on every render
@@ -135,7 +119,7 @@ export default function MemoryTable() {
       <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
         <div className="sm:flex sm:flex-col sm:align-center">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-            Select RAM
+            Select Memory
           </h1>
         </div>
 
@@ -152,10 +136,10 @@ export default function MemoryTable() {
                       padding: '10px',
                       textAlign: 'center',
                       color: 'white',
-                      cursor: key === 'name' || key === 'color' ? 'default' : 'pointer',
+                      cursor: (key === 'name' || key === 'modules' || key === 'color') ? 'default' : 'pointer',
                     }}
                   >
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                    {key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')}
                   </th>
                 ))}
               </tr>
@@ -191,8 +175,8 @@ export default function MemoryTable() {
                       >
                         <div style={{ flex: '1 1 10%' }}>{row.name}</div>
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price).toFixed(2)}</div>
-                        <div style={{ flex: '1 1 10%' }}>{formatSpeed(row.speed)}</div>
-                        <div style={{ flex: '1 1 10%' }}>{formatModules(row.modules)}</div>
+                        <div style={{ flex: '1 1 10%' }}>{row.speed}</div>
+                        <div style={{ flex: '1 1 10%' }}>{row.modules}</div>
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price_per_gb).toFixed(2)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.color}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.first_word_lat}</div>
