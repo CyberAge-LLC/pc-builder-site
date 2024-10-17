@@ -15,11 +15,11 @@ export default function MemoryTable() {
     name: string;
     price: string;
     speed: string; // Not sortable
-    modules: string;
-    price_per_gigabyte: string; // Will show up to 3 decimal places
-    color: string;
-    first_word_lat: string;
-    cas_latency: string;
+    modules: string; // Not sortable
+    price_per_gigabyte: string; // Sortable, numeric
+    color: string; // Not sortable
+    first_word_latency: string; // Sortable, numeric
+    cas_latency: string; // Sortable, integer
   };
 
   const [data, setData] = useState<TableRow[]>([]);
@@ -65,7 +65,7 @@ export default function MemoryTable() {
   };
 
   const handleSort = (key: keyof TableRow) => {
-    // Only allow sorting for numeric fields, disable sorting for name, modules, color, and speed
+    // Only allow sorting for numeric fields, disable sorting for non-numeric fields like name, modules, color, and speed
     if (key === 'name' || key === 'modules' || key === 'color' || key === 'speed') return;
 
     let direction: 'ascending' | 'descending' = 'ascending';
@@ -80,12 +80,24 @@ export default function MemoryTable() {
 
   const sortData = (key: keyof TableRow, direction: 'ascending' | 'descending') => {
     const sorted = [...data].sort((a, b) => {
-      let aValue = a[key] as string;
-      let bValue = b[key] as string;
+      let aValue: number | null;
+      let bValue: number | null;
 
-      if (aValue === null || bValue === null) return 0;
+      if (key === 'price_per_gigabyte' || key === 'first_word_latency' || key === 'cas_latency') {
+        aValue = parseFloat(a[key] as string);
+        bValue = parseFloat(b[key] as string);
+      } else {
+        aValue = parseInt(a[key] as string);
+        bValue = parseInt(b[key] as string);
+      }
 
-      return direction === 'ascending' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      if (isNaN(aValue)) aValue = null;
+      if (isNaN(bValue)) bValue = null;
+
+      if (aValue === null) return 1; // Move NaN values to the bottom
+      if (bValue === null) return -1;
+
+      return direction === 'ascending' ? aValue - bValue : bValue - aValue;
     });
 
     setData(sorted);
