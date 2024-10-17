@@ -14,12 +14,12 @@ export default function MemoryTable() {
     id: number;
     name: string;
     price: string;
-    speed: string;
+    speed: string; // Initially a string, will be converted to an int
     modules: string;
-    price_per_gb: string;
+    price_per_gigabyte: string; // Updated name to match the column in the table
     color: string;
-    first_word_lat: string;
-    cas_latency: string;
+    first_word_lat: string; // Updated name to match the column in the table
+    cas_latency: string; // Updated name to match the column in the table
   };
 
   const [data, setData] = useState<TableRow[]>([]);
@@ -65,7 +65,7 @@ export default function MemoryTable() {
   };
 
   const handleSort = (key: keyof TableRow) => {
-    // Only allow sorting for numeric fields and disable sorting for non-numeric fields
+    // Only allow sorting for numeric fields and disable sorting for non-numeric fields like name, modules, and color
     if (key === 'name' || key === 'modules' || key === 'color') return;
 
     let direction: 'ascending' | 'descending' = 'ascending';
@@ -83,9 +83,19 @@ export default function MemoryTable() {
       let aValue: number | null;
       let bValue: number | null;
 
-      if (key === 'price' || key === 'price_per_gb' || key === 'cas_latency' || key === 'first_word_lat' || key === 'speed') {
-        aValue = parseFloat(a[key] as string);
-        bValue = parseFloat(b[key] as string);
+      if (key === 'price' || key === 'price_per_gigabyte' || key === 'cas_latency' || key === 'first_word_lat' || key === 'speed') {
+        if (key === 'speed') {
+          // Convert speed from string representation of an array to an integer
+          aValue = parseInt(a.speed.replace(/[\[\],]/g, ''));
+          bValue = parseInt(b.speed.replace(/[\[\],]/g, ''));
+        } else if (key === 'first_word_lat') {
+          // Ensure first_word_lat is a float with 3 decimal places
+          aValue = parseFloat(parseFloat(a[key] as string).toFixed(3));
+          bValue = parseFloat(parseFloat(b[key] as string).toFixed(3));
+        } else {
+          aValue = parseFloat(a[key] as string);
+          bValue = parseFloat(b[key] as string);
+        }
       } else {
         aValue = parseInt(a[key] as string);
         bValue = parseInt(b[key] as string);
@@ -127,7 +137,7 @@ export default function MemoryTable() {
           <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ display: 'flex', textAlign: 'left', backgroundColor: '#2a2a2a' }}>
-                {['name', 'price', 'speed', 'modules', 'price_per_gb', 'color', 'first_word_lat', 'cas_latency'].map((key) => (
+                {['name', 'price', 'speed', 'modules', 'price_per_gigabyte', 'color', 'first_word_lat', 'cas_latency'].map((key) => (
                   <th
                     key={key}
                     onClick={() => handleSort(key as keyof TableRow)}
@@ -175,11 +185,11 @@ export default function MemoryTable() {
                       >
                         <div style={{ flex: '1 1 10%' }}>{row.name}</div>
                         <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price).toFixed(2)}</div>
-                        <div style={{ flex: '1 1 10%' }}>{row.speed}</div>
+                        <div style={{ flex: '1 1 10%' }}>{parseInt(row.speed.replace(/[\[\],]/g, ''))}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.modules}</div>
-                        <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price_per_gb).toFixed(2)}</div>
+                        <div style={{ flex: '1 1 10%' }}>{parseFloat(row.price_per_gigabyte).toFixed(2)}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.color}</div>
-                        <div style={{ flex: '1 1 10%' }}>{row.first_word_lat}</div>
+                        <div style={{ flex: '1 1 10%' }}>{parseFloat(parseFloat(row.first_word_lat).toFixed(3))}</div>
                         <div style={{ flex: '1 1 10%' }}>{row.cas_latency}</div>
                       </button>
                     </td>
